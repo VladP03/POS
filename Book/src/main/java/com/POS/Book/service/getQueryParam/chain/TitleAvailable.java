@@ -9,7 +9,6 @@ import com.POS.Book.service.exception.book.TitleNotFoundException;
 import com.POS.Book.service.getQueryParam.Chain;
 
 import java.util.List;
-import java.util.Optional;
 
 public class TitleAvailable implements Chain {
 
@@ -23,15 +22,13 @@ public class TitleAvailable implements Chain {
     @Override
     public List<BookDTO> run(BookFilter bookFilter, BookRepository bookRepository) {
         if (bookFilter.getTitle() != null) {
-            Optional<List<Book>> optionalBookList = Optional.ofNullable(bookRepository.findByTitleContaining(bookFilter.getTitle()));
+            List<Book> bookList = bookRepository.findByTitleContaining(bookFilter.getTitle());
 
-            if (optionalBookList.isPresent()) {
-                return BookAdapter.toDTOList(optionalBookList.get());
+            if (!bookList.isEmpty()) {
+                return BookAdapter.toDTOList(bookList);
             } else {
                 throw new TitleNotFoundException(bookFilter.getTitle());
             }
-
-
         } else {
             return nextChain.run(bookFilter, bookRepository);
         }

@@ -24,11 +24,10 @@ public class IsbnAvailable implements Chain {
     @Override
     public List<BookDTO> run(BookFilter bookFilter, BookRepository bookRepository) {
         if (bookFilter.getIsbn() != null) {
-            Optional<Book> optionalBook = Optional.ofNullable(bookRepository.findByIsbn(bookFilter.getIsbn()));
-
-            return optionalBook.map(books -> BookAdapter.toDTOList(Collections.singletonList(books)))
+            Book book = Optional.ofNullable(bookRepository.findByIsbn(bookFilter.getIsbn()))
                     .orElseThrow(() -> new IsbnNotFoundException(bookFilter.getIsbn()));
 
+            return BookAdapter.toDTOList(Collections.singletonList(book));
         } else {
             return nexChain.run(bookFilter, bookRepository);
         }

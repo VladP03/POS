@@ -1,5 +1,8 @@
 package com.POS.Book.service.exception.book;
 
+import lombok.Getter;
+
+@Getter
 public class YearNotFoundException extends RuntimeException {
 
     private final String message;

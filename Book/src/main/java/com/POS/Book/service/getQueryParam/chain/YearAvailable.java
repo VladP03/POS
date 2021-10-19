@@ -9,7 +9,6 @@ import com.POS.Book.service.exception.book.YearNotFoundException;
 import com.POS.Book.service.getQueryParam.Chain;
 
 import java.util.List;
-import java.util.Optional;
 
 public class YearAvailable implements Chain {
 
@@ -23,10 +22,13 @@ public class YearAvailable implements Chain {
     @Override
     public List<BookDTO> run(BookFilter bookFilter, BookRepository bookRepository) {
         if (bookFilter.getYear() != null) {
-            Optional<List<Book>> optionalBookList = Optional.ofNullable(bookRepository.findByYear(bookFilter.getYear()));
+            List<Book> bookList = bookRepository.findByYear(bookFilter.getYear());
 
-            return optionalBookList.map(books -> BookAdapter.toDTOList(books))
-                    .orElseThrow(() -> new YearNotFoundException(bookFilter.getYear()));
+            if (!bookList.isEmpty()) {
+                return BookAdapter.toDTOList(bookList);
+            } else {
+                throw new YearNotFoundException(bookFilter.getYear());
+            }
         } else {
             return nextChain.run(bookFilter, bookRepository);
         }
