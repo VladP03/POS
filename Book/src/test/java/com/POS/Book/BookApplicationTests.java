@@ -1,4 +1,4 @@
-package com.facultate.POS.Book;
+package com.POS.Book;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

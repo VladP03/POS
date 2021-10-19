@@ -1,9 +1,8 @@
-package com.facultate.POS.Book.controller;
+package com.POS.Book.controller;
 
-import com.facultate.POS.Book.model.BookDTO;
-import com.facultate.POS.Book.service.BookService;
+import com.POS.Book.model.BookDTO;
+import com.POS.Book.service.BookService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;

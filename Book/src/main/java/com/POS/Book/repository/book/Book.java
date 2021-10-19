@@ -1,4 +1,4 @@
-package com.facultate.POS.Book.repository.book;
+package com.POS.Book.repository.book;
 
 import lombok.*;
 

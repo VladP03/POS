@@ -1,7 +1,7 @@
-package com.facultate.POS.Book.model.adapter;
+package com.POS.Book.model.adapter;
 
-import com.facultate.POS.Book.model.BookDTO;
-import com.facultate.POS.Book.repository.book.Book;
+import com.POS.Book.model.BookDTO;
+import com.POS.Book.repository.book.Book;
 
 public final class BookAdapter {
 

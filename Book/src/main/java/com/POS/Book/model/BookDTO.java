@@ -1,14 +1,11 @@
-package com.facultate.POS.Book.model;
+package com.POS.Book.model;
 
-import com.facultate.POS.Book.model.validation.OnCreate;
-import com.facultate.POS.Book.model.validation.OnUpdate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
 import javax.validation.constraints.PositiveOrZero;
 
 @Builder
