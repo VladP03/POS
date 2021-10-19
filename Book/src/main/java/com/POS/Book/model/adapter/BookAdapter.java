@@ -3,11 +3,15 @@ package com.POS.Book.model.adapter;
 import com.POS.Book.model.BookDTO;
 import com.POS.Book.repository.book.Book;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public final class BookAdapter {
 
-    private BookAdapter() {}
+    private BookAdapter() {
+    }
 
-    public static BookDTO toBookDTO (Book book) {
+    public static BookDTO toDTO(Book book) {
         return BookDTO.builder()
                 .isbn(book.getIsbn())
                 .title(book.getTitle())
@@ -18,7 +22,7 @@ public final class BookAdapter {
                 .build();
     }
 
-    public static Book fromBookDTO (BookDTO bookDTO) {
+    public static Book fromDTO(BookDTO bookDTO) {
         return Book.builder()
                 .isbn(bookDTO.getIsbn())
                 .title(bookDTO.getTitle())
@@ -27,5 +31,25 @@ public final class BookAdapter {
                 .price(bookDTO.getPrice())
                 .stock(bookDTO.getStock())
                 .build();
+    }
+
+    public static List<BookDTO> toDTOList(List<Book> bookList) {
+        List<BookDTO> bookDTOList = new ArrayList<>();
+
+        for (Book book : bookList) {
+            bookDTOList.add(toDTO(book));
+        }
+
+        return bookDTOList;
+    }
+
+    public static List<Book> fromDTOList(List<BookDTO> bookDTOList) {
+        List<Book> bookList = new ArrayList<>();
+
+        for (BookDTO bookDTO : bookDTOList) {
+            bookList.add(fromDTO(bookDTO));
+        }
+
+        return bookList;
     }
 }

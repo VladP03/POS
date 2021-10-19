@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -19,11 +20,11 @@ public class BookService {
 
     private final BookRepository bookRepository;
 
-    public BookDTO getBook(String title) {
-        Optional<Book> bookOptional = Optional.ofNullable(bookRepository.findByTitle(title));
+    public List<BookDTO> getBook() {
+        Optional<List<Book>> bookOptional = Optional.ofNullable(bookRepository.findAll());
 
         if (bookOptional.isPresent()) {
-            return BookAdapter.toBookDTO(bookOptional.get());
+            return BookAdapter.toDTOList(bookOptional.get());
         } else {
             throw new RuntimeException();
         }
@@ -31,6 +32,6 @@ public class BookService {
 
     @Validated(OnCreate.class)
     public BookDTO createBook(@Valid BookDTO bookDTO) {
-        return BookAdapter.toBookDTO(bookRepository.save(BookAdapter.fromBookDTO(bookDTO)));
+        return BookAdapter.toDTO(bookRepository.save(BookAdapter.fromDTO(bookDTO)));
     }
 }
