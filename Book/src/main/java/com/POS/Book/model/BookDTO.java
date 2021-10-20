@@ -17,8 +17,11 @@ public class BookDTO {
 //    @NotNull(message = "Book's ISBN must be null", groups = {OnUpdate.class})
     private String isbn;
 
-    @NotNull(message = "Book's Title can not be null")
+    @NotNull(message = "Book's title can not be null")
     private String title;
+
+    @NotNull(message = "Book's publisher can not be null")
+    private String publisher;
 
     @NotNull(message = "Book's year can not be null")
     private Integer year;

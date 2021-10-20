@@ -11,6 +11,7 @@ public final class BookFilter {
 
     private final String isbn;
     private final String title;
+    private final String publisher;
     private final Integer year;
     private final Double price;
 }
