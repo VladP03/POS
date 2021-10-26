@@ -3,20 +3,15 @@ package com.POS.Book.service.exception;
 import com.POS.Book.service.exception.book.IsbnNotFoundException;
 import com.POS.Book.service.exception.book.TitleNotFoundException;
 import com.POS.Book.service.exception.book.YearNotFoundException;
-import org.springframework.http.HttpHeaders;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import javax.validation.ConstraintViolationException;
-
+@Log4j2
 @RestControllerAdvice
 public class ExceptionHandlerAdvice {
 
@@ -26,9 +21,11 @@ public class ExceptionHandlerAdvice {
     public ApiError handleMethodArgumentNotValid(MethodArgumentNotValidException exception) {
         String errorMessage = exception.getBindingResult().getAllErrors().get(0).getDefaultMessage();
 
+        log.error("MethodArgumentNotValidException has been thrown with the following message: " + errorMessage);
+
         return ApiError.builder()
                 .httpStatus(HttpStatus.BAD_REQUEST)
-                .message(errorMessage)
+                .errorMessage(errorMessage)
                 .debugMessage("")
                 .build();
     }
@@ -38,32 +35,37 @@ public class ExceptionHandlerAdvice {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
     public ApiError handleIsbnNotFoundException(IsbnNotFoundException exception) {
+        String errorMessage = "Could not found this ISBN: " + exception.getMessage();
+        String debugMessage = "Try another ISBN";
+
+        log.error("IsbnNotFoundException has been thrown with the following message: " + errorMessage);
+
         return ApiError.builder()
                 .httpStatus(HttpStatus.NOT_FOUND)
-                .message(exception.getMessage())
-                .debugMessage("")
+                .errorMessage(errorMessage)
+                .debugMessage(debugMessage)
                 .build();
     }
 
-    @ExceptionHandler(TitleNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ResponseBody
-    public ApiError handleTitleNotFoundException(TitleNotFoundException exception) {
-        return ApiError.builder()
-                .httpStatus(HttpStatus.NOT_FOUND)
-                .message(exception.getMessage())
-                .debugMessage("")
-                .build();
-    }
-
-    @ExceptionHandler(YearNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ResponseBody
-    public ApiError handleYearNotFoundException(YearNotFoundException exception) {
-        return ApiError.builder()
-                .httpStatus(HttpStatus.NOT_FOUND)
-                .message(exception.getMessage())
-                .debugMessage("")
-                .build();
-    }
+//    @ExceptionHandler(TitleNotFoundException.class)
+//    @ResponseStatus(HttpStatus.NOT_FOUND)
+//    @ResponseBody
+//    public ApiError handleTitleNotFoundException(TitleNotFoundException exception) {
+//        return ApiError.builder()
+//                .httpStatus(HttpStatus.NOT_FOUND)
+//                .errorMessage(exception.getMessage())
+//                .debugMessage("")
+//                .build();
+//    }
+//
+//    @ExceptionHandler(YearNotFoundException.class)
+//    @ResponseStatus(HttpStatus.NOT_FOUND)
+//    @ResponseBody
+//    public ApiError handleYearNotFoundException(YearNotFoundException exception) {
+//        return ApiError.builder()
+//                .httpStatus(HttpStatus.NOT_FOUND)
+//                .errorMessage(exception.getMessage())
+//                .debugMessage("")
+//                .build();
+//    }
 }

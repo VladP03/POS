@@ -2,19 +2,17 @@ package com.POS.Book.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 
+@Data
 @Builder
-@Getter @Setter
 @AllArgsConstructor
 public class BookDTO {
 
-//    @Null(message = "Book's ISBN can not be null", groups = {OnCreate.class})
-//    @NotNull(message = "Book's ISBN must be null", groups = {OnUpdate.class})
+    @NotNull(message = "Book's ISBN can not be null")
     private String isbn;
 
     @NotNull(message = "Book's title can not be null")

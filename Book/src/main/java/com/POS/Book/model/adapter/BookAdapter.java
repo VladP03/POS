@@ -2,16 +2,15 @@ package com.POS.Book.model.adapter;
 
 import com.POS.Book.model.BookDTO;
 import com.POS.Book.repository.book.Book;
+import lombok.experimental.UtilityClass;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-public final class BookAdapter {
+@UtilityClass
+public class BookAdapter {
 
-    private BookAdapter() {
-    }
-
-    public static BookDTO toDTO(Book book) {
+    public BookDTO toDTO(Book book) {
         return BookDTO.builder()
                 .isbn(book.getIsbn())
                 .title(book.getTitle())
@@ -23,7 +22,7 @@ public final class BookAdapter {
                 .build();
     }
 
-    public static Book fromDTO(BookDTO bookDTO) {
+    public Book fromDTO(BookDTO bookDTO) {
         return Book.builder()
                 .isbn(bookDTO.getIsbn())
                 .title(bookDTO.getTitle())
@@ -35,23 +34,11 @@ public final class BookAdapter {
                 .build();
     }
 
-    public static List<BookDTO> toDTOList(List<Book> bookList) {
-        List<BookDTO> bookDTOList = new ArrayList<>();
-
-        for (Book book : bookList) {
-            bookDTOList.add(toDTO(book));
-        }
-
-        return bookDTOList;
+    public List<BookDTO> toDTOList(List<Book> bookList) {
+        return bookList.stream().map(BookAdapter::toDTO).collect(Collectors.toList());
     }
 
-    public static List<Book> fromDTOList(List<BookDTO> bookDTOList) {
-        List<Book> bookList = new ArrayList<>();
-
-        for (BookDTO bookDTO : bookDTOList) {
-            bookList.add(fromDTO(bookDTO));
-        }
-
-        return bookList;
+    public List<Book> fromDTOList(List<BookDTO> bookDTOList) {
+        return bookDTOList.stream().map(BookAdapter::fromDTO).collect(Collectors.toList());
     }
 }
