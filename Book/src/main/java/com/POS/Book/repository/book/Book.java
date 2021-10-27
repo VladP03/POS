@@ -2,14 +2,15 @@ package com.POS.Book.repository.book;
 
 import lombok.*;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "Book")
+@Table(name = "book")
+@Data
 @Builder
-@Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Book {

@@ -1,17 +1,17 @@
 package com.POS.Book.repository.author;
 
+
 import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "author")
+@Data
 @Builder
-@Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Author {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

@@ -4,7 +4,8 @@ import com.POS.Book.model.BookDTO;
 import com.POS.Book.model.adapter.BookAdapter;
 import com.POS.Book.model.validation.OnCreate;
 import com.POS.Book.repository.book.BookRepository;
-import com.POS.Book.service.exception.book.IsbnNotFoundException;
+import com.POS.Book.service.exception.book.NotFound.IsbnNotFoundException;
+import com.POS.Book.service.exception.book.unique.TitleUniqueException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -31,8 +32,24 @@ public class BookService {
     public BookDTO createBook(@Valid BookDTO bookDTO) {
         log.info(String.format("%s -> createBook(%s)", this.getClass().getSimpleName(), bookDTO.toString()));
 
+        checkTitleForUnicity(bookDTO.getTitle());
+
         return BookAdapter.toDTO(bookRepository.save(BookAdapter.fromDTO(bookDTO)));
     }
+
+    private void checkTitleForUnicity(String title) {
+        if (titleIsNotUnique(title)) {
+            throw new TitleUniqueException(title);
+        }
+    }
+
+    private boolean titleIsNotUnique(String title) {
+        log.info(String.format("Check Title: %s for unicity", title));
+
+        return bookRepository.existsByTitle(title);
+    }
+
+
 
 //    public List<BookDTO> getBooks(BookFilter bookFilter) {
 //        if (areAllFieldsNull(bookFilter)) {

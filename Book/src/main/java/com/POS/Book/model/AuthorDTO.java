@@ -11,7 +11,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 
 @Builder
-@Getter @Setter
+@Getter
+@Setter
 @AllArgsConstructor
 public class AuthorDTO {
 

@@ -1,8 +1,8 @@
 package com.POS.Book.service.exception;
 
-import com.POS.Book.service.exception.book.IsbnNotFoundException;
-import com.POS.Book.service.exception.book.TitleNotFoundException;
-import com.POS.Book.service.exception.book.YearNotFoundException;
+import com.POS.Book.service.exception.author.AuthorNotFoundException;
+import com.POS.Book.service.exception.book.NotFound.IsbnNotFoundException;
+import com.POS.Book.service.exception.book.unique.TitleUniqueException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -20,8 +20,7 @@ public class ExceptionHandlerAdvice {
     @ResponseBody
     public ApiError handleMethodArgumentNotValid(MethodArgumentNotValidException exception) {
         String errorMessage = exception.getBindingResult().getAllErrors().get(0).getDefaultMessage();
-
-        log.error("MethodArgumentNotValidException has been thrown with the following message: " + errorMessage);
+        String debugMessage;
 
         return ApiError.builder()
                 .httpStatus(HttpStatus.BAD_REQUEST)
@@ -29,7 +28,6 @@ public class ExceptionHandlerAdvice {
                 .debugMessage("")
                 .build();
     }
-
 
     @ExceptionHandler(IsbnNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
@@ -42,6 +40,38 @@ public class ExceptionHandlerAdvice {
 
         return ApiError.builder()
                 .httpStatus(HttpStatus.NOT_FOUND)
+                .errorMessage(errorMessage)
+                .debugMessage(debugMessage)
+                .build();
+    }
+
+    @ExceptionHandler(AuthorNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseBody
+    public ApiError handleAuthorNotFoundException(AuthorNotFoundException exception) {
+        String errorMessage = "Could not found an author with id: " + exception.getMessage();
+        String debugMessage = "Try another id";
+
+        log.error("AuthorNotFoundException has been thrown with the following message: " + errorMessage);
+
+        return ApiError.builder()
+                .httpStatus(HttpStatus.NOT_FOUND)
+                .errorMessage(errorMessage)
+                .debugMessage(debugMessage)
+                .build();
+    }
+
+    @ExceptionHandler(TitleUniqueException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public ApiError handleTitleUniqueException(TitleUniqueException exception) {
+        String errorMessage = "Title: " + exception.getMessage() + " already exists";
+        String debugMessage = "Try a different title";
+
+        log.error("TitleUniqueException has been thrown with the following message: " + errorMessage);
+
+        return ApiError.builder()
+                .httpStatus(HttpStatus.BAD_REQUEST)
                 .errorMessage(errorMessage)
                 .debugMessage(debugMessage)
                 .build();

@@ -8,9 +8,10 @@ import java.util.stream.Collectors;
 
 public final class AuthorAdapter {
 
-    private AuthorAdapter() {}
+    private AuthorAdapter() {
+    }
 
-    public static AuthorDTO toDTO (Author author) {
+    public static AuthorDTO toDTO(Author author) {
         return AuthorDTO.builder()
                 .id(author.getId())
                 .firstName(author.getFirstName())
@@ -18,7 +19,7 @@ public final class AuthorAdapter {
                 .build();
     }
 
-    public static Author fromDTO (AuthorDTO authorDTO) {
+    public static Author fromDTO(AuthorDTO authorDTO) {
         return Author.builder()
                 .id(authorDTO.getId())
                 .firstName(authorDTO.getFirstName())
@@ -26,13 +27,13 @@ public final class AuthorAdapter {
                 .build();
     }
 
-    public static List<AuthorDTO> toDTOList (List<Author> authorList) {
+    public static List<AuthorDTO> toDTOList(List<Author> authorList) {
         return authorList.stream()
                 .map(AuthorAdapter::toDTO)
                 .collect(Collectors.toList());
     }
 
-    public static List<Author> fromDTOList (List<AuthorDTO> authorDTOList) {
+    public static List<Author> fromDTOList(List<AuthorDTO> authorDTOList) {
         return authorDTOList.stream()
                 .map(AuthorAdapter::fromDTO)
                 .collect(Collectors.toList());

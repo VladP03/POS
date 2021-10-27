@@ -3,7 +3,7 @@ package com.POS.Book.service.exception.book;
 import lombok.Getter;
 
 @Getter
-public class TitleNotFoundException extends RuntimeException{
+public class TitleNotFoundException extends RuntimeException {
 
     private final String message;
 

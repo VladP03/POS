@@ -18,13 +18,13 @@ import javax.validation.Valid;
 public class BookController {
 
     private final BookService bookService;
-//    private final AuthorService authorService;
+    private final AuthorService authorService;
 
-    @GetMapping(value = "/book", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<BookDTO> getBook(@RequestParam String ISBN) {
-        log.info(String.format("%s -> getBook(%s)", this.getClass().getSimpleName(), ISBN));
+    @GetMapping(value = "/book/{ISBN}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<BookDTO> getBook(@PathVariable(name = "ISBN") String isbn) {
+        log.info(String.format("%s -> getBook(%s)", this.getClass().getSimpleName(), isbn));
 
-        return ResponseEntity.ok(bookService.getBook(ISBN));
+        return ResponseEntity.ok(bookService.getBook(isbn));
     }
 
     @PostMapping("/book")
@@ -50,16 +50,5 @@ public class BookController {
 //                .build();
 //
 //        return ResponseEntity.ok(bookService.getBooks(bookFilter));
-//    }
-//
-//
-//    @GetMapping("/authors")
-//    public ResponseEntity<AuthorDTO> getAuthor(@RequestParam Long id) {
-//        return ResponseEntity.ok(authorService.getAuthor(id));
-//    }
-//
-//    @PostMapping("/author")
-//    public ResponseEntity<AuthorDTO> createAuthor(@Valid @RequestBody AuthorDTO authorDTO) {
-//        return ResponseEntity.ok(authorService.createAuthor(authorDTO));
 //    }
 }
