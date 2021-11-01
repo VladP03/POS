@@ -1,6 +1,7 @@
 package com.POS.Book.controller;
 
 import com.POS.Book.model.BookDTO;
+import com.POS.Book.model.filter.BookFilter;
 import com.POS.Book.service.AuthorService;
 import com.POS.Book.service.BookService;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Log4j2
 @RestController
@@ -33,6 +35,21 @@ public class BookController {
 
         return ResponseEntity.ok(bookService.createBook(bookDTO));
     }
+
+    @GetMapping("/books")
+    public ResponseEntity<List<BookDTO>> getBooks(
+            @RequestParam(required = false) Integer page,
+            @RequestParam Integer items_per_page) {
+//        log.info(String.format("%s -> getBooks(%s)", this.getClass().getSimpleName(), bookDTO.toString()));
+
+        BookFilter bookFilter = BookFilter.builder()
+                .page(page)
+                .items_per_page(items_per_page)
+                .build();
+
+        return ResponseEntity.ok(bookService.getBooks(bookFilter));
+    }
+
 
 //
 //    @GetMapping("/books")

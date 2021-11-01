@@ -6,10 +6,11 @@ import lombok.Getter;
 
 @Builder
 @Getter
-@AllArgsConstructor
 public final class BookFilter {
 
-    private final String isbn;
+    private final Integer page;
+    private final Integer items_per_page;
+
     private final String title;
     private final String publisher;
     private final Integer year;

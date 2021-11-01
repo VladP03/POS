@@ -2,16 +2,19 @@ package com.POS.Book.service;
 
 import com.POS.Book.model.BookDTO;
 import com.POS.Book.model.adapter.BookAdapter;
+import com.POS.Book.model.filter.BookFilter;
 import com.POS.Book.model.validation.OnCreate;
 import com.POS.Book.repository.book.BookRepository;
 import com.POS.Book.service.exception.book.NotFound.IsbnNotFoundException;
 import com.POS.Book.service.exception.book.unique.TitleUniqueException;
+import com.POS.Book.service.queryParamCOP.COPPageDisplay;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Log4j2
 @Service
@@ -35,6 +38,10 @@ public class BookService {
         checkTitleForUnicity(bookDTO.getTitle());
 
         return BookAdapter.toDTO(bookRepository.save(BookAdapter.fromDTO(bookDTO)));
+    }
+
+    public List<BookDTO> getBooks(BookFilter bookFilter) {
+        return new COPPageDisplay().getFirstChain().run(bookFilter, bookRepository);
     }
 
     private void checkTitleForUnicity(String title) {
