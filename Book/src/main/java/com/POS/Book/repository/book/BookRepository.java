@@ -12,7 +12,8 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 
     boolean existsByTitle(String title);
 
-    List<Book> findByTitleContaining(String title);
-    List<Book> findByPrice(Double price);
+    List<Book> findByGenre(String genre);
     List<Book> findByYear(Integer year);
+
+    List<Book> findByGenreAndYear(String genre, Integer year);
 }

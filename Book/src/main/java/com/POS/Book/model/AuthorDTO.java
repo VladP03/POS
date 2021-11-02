@@ -24,5 +24,5 @@ public class AuthorDTO {
     private String firstName;
 
     @NotNull(message = "Author's second name can not be null")
-    private String secondName;
+    private String lastName;
 }

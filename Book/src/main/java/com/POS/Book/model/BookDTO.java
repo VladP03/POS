@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 
@@ -12,20 +13,20 @@ import javax.validation.constraints.PositiveOrZero;
 @AllArgsConstructor
 public class BookDTO {
 
-    @NotNull(message = "Book's ISBN can not be null")
+    @NotEmpty(message = "Book's ISBN can not be null or empty")
     private String isbn;
 
-    @NotNull(message = "Book's title can not be null")
+    @NotEmpty(message = "Book's title can not be null or empty")
     private String title;
 
-    @NotNull(message = "Book's publisher can not be null")
+    @NotEmpty(message = "Book's publisher can not be null or empty")
     private String publisher;
 
     @NotNull(message = "Book's year can not be null")
     private Integer year;
 
-    @NotNull(message = "Book's gender can not be null")
-    private String gender;
+    @NotEmpty(message = "Book's genre can not be null or empty")
+    private String genre;
 
     @NotNull(message = "Book's price can not be null")
     @PositiveOrZero(message = "Book's price can not be negative")

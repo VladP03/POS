@@ -1,4 +1,4 @@
-package com.POS.Book.service.getQueryParam.chain;
+package com.POS.Book.service.BookQueryParam.chainGenreYear;
 
 import com.POS.Book.model.BookDTO;
 import com.POS.Book.model.adapter.BookAdapter;
@@ -6,7 +6,7 @@ import com.POS.Book.model.filter.BookFilter;
 import com.POS.Book.repository.book.Book;
 import com.POS.Book.repository.book.BookRepository;
 import com.POS.Book.service.exception.book.YearNotFoundException;
-import com.POS.Book.service.getQueryParam.Chain;
+import com.POS.Book.service.BookQueryParam.Chain;
 
 import java.util.List;
 

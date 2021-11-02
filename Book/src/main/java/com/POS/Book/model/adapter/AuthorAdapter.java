@@ -2,20 +2,19 @@ package com.POS.Book.model.adapter;
 
 import com.POS.Book.model.AuthorDTO;
 import com.POS.Book.repository.author.Author;
+import lombok.experimental.UtilityClass;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-public final class AuthorAdapter {
-
-    private AuthorAdapter() {
-    }
+@UtilityClass
+public class AuthorAdapter {
 
     public static AuthorDTO toDTO(Author author) {
         return AuthorDTO.builder()
                 .id(author.getId())
                 .firstName(author.getFirstName())
-                .secondName(author.getSecondName())
+                .lastName(author.getLastName())
                 .build();
     }
 
@@ -23,7 +22,7 @@ public final class AuthorAdapter {
         return Author.builder()
                 .id(authorDTO.getId())
                 .firstName(authorDTO.getFirstName())
-                .secondName(authorDTO.getSecondName())
+                .lastName(authorDTO.getLastName())
                 .build();
     }
 
@@ -38,5 +37,4 @@ public final class AuthorAdapter {
                 .map(AuthorAdapter::fromDTO)
                 .collect(Collectors.toList());
     }
-
 }

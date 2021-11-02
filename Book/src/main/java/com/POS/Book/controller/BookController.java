@@ -22,50 +22,38 @@ public class BookController {
     private final BookService bookService;
     private final AuthorService authorService;
 
+
     @GetMapping(value = "/book/{ISBN}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<BookDTO> getBook(@PathVariable(name = "ISBN") String isbn) {
-        log.info(String.format("%s -> getBook(%s)", this.getClass().getSimpleName(), isbn));
+    public ResponseEntity<BookDTO> getBook(
+            @PathVariable(name = "ISBN") String isbn,
+            @RequestParam(required = false) Boolean verbose) {
+        log.info(String.format("%s -> %s(%s)", this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName(), isbn));
 
-        return ResponseEntity.ok(bookService.getBook(isbn));
+        return ResponseEntity.ok(bookService.getBook(isbn, verbose));
     }
 
-    @PostMapping("/book")
-    public ResponseEntity<BookDTO> createBook(@Valid @RequestBody BookDTO bookDTO) {
-        log.info(String.format("%s -> createBook(%s)", this.getClass().getSimpleName(), bookDTO.toString()));
-
-        return ResponseEntity.ok(bookService.createBook(bookDTO));
-    }
-
-    @GetMapping("/books")
+    @GetMapping(value = "/books", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<BookDTO>> getBooks(
             @RequestParam(required = false) Integer page,
-            @RequestParam Integer items_per_page) {
-//        log.info(String.format("%s -> getBooks(%s)", this.getClass().getSimpleName(), bookDTO.toString()));
+            @RequestParam(required = false) Integer items_per_page,
+            @RequestParam(required = false) String genre,
+            @RequestParam(required = false) Integer year) {
+        log.info(String.format("%s -> %s ->", this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName()));
 
         BookFilter bookFilter = BookFilter.builder()
                 .page(page)
                 .items_per_page(items_per_page)
+                .genre(genre)
+                .year(year)
                 .build();
 
         return ResponseEntity.ok(bookService.getBooks(bookFilter));
     }
 
+    @PostMapping(value = "/book", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<BookDTO> createBook(@Valid @RequestBody BookDTO bookDTO) {
+        log.info(String.format("%s -> %s(%s)", this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName(), bookDTO.toString()));
 
-//
-//    @GetMapping("/books")
-//    public ResponseEntity<List<BookDTO>> getBooks(
-//            @RequestParam(required = false) String title,
-////            @RequestParam(required = false) String Publisher, TODO
-////            @RequestParam(required = false) String gender, TODO
-//            @RequestParam(required = false) Integer year,
-//            @RequestParam(required = false) Double price) {
-//
-//        BookFilter bookFilter = BookFilter.builder()
-//                .title(title)
-//                .year(year)
-//                .price(price)
-//                .build();
-//
-//        return ResponseEntity.ok(bookService.getBooks(bookFilter));
-//    }
+        return ResponseEntity.ok(bookService.createBook(bookDTO));
+    }
 }

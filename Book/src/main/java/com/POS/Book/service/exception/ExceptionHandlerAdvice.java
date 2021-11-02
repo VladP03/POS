@@ -49,8 +49,8 @@ public class ExceptionHandlerAdvice {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
     public ApiError handleAuthorNotFoundException(AuthorNotFoundException exception) {
-        String errorMessage = "Could not found an author with id: " + exception.getMessage();
-        String debugMessage = "Try another id";
+        String errorMessage = "Could not found an author " + exception.getMessage();
+        String debugMessage = "";
 
         log.error("AuthorNotFoundException has been thrown with the following message: " + errorMessage);
 

@@ -21,7 +21,7 @@ public class Book {
     private String title;
     private String publisher;
     private Integer year;
-    private String gender;
+    private String genre;
     private Double price;
     private Integer stock;
 }

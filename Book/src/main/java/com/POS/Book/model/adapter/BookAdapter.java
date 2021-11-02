@@ -16,7 +16,7 @@ public class BookAdapter {
                 .title(book.getTitle())
                 .publisher(book.getPublisher())
                 .year(book.getYear())
-                .gender(book.getGender())
+                .genre(book.getGenre())
                 .price(book.getPrice())
                 .stock(book.getStock())
                 .build();
@@ -28,7 +28,7 @@ public class BookAdapter {
                 .title(bookDTO.getTitle())
                 .publisher(bookDTO.getPublisher())
                 .year(bookDTO.getYear())
-                .gender(bookDTO.getGender())
+                .genre(bookDTO.getGenre())
                 .price(bookDTO.getPrice())
                 .stock(bookDTO.getStock())
                 .build();
