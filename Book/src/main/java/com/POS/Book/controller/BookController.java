@@ -2,6 +2,7 @@ package com.POS.Book.controller;
 
 import com.POS.Book.model.BookDTO;
 import com.POS.Book.model.filter.BookFilter;
+import com.POS.Book.model.partially.BookPartially;
 import com.POS.Book.service.AuthorService;
 import com.POS.Book.service.BookService;
 import lombok.RequiredArgsConstructor;
@@ -24,10 +25,17 @@ public class BookController {
 
 
     @GetMapping(value = "/book/{ISBN}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<BookDTO> getBook(
-            @PathVariable(name = "ISBN") String isbn,
-            @RequestParam(required = false) Boolean verbose) {
+    public ResponseEntity<BookDTO> getBook(@PathVariable(name = "ISBN") String isbn) {
         log.info(String.format("%s -> %s(%s)", this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName(), isbn));
+
+        return ResponseEntity.ok(bookService.getBook(isbn));
+    }
+
+    @GetMapping(value = "/book/{ISBN}", params = "verbose", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<BookPartially> getBook(
+            @PathVariable(name = "ISBN") String isbn,
+            @RequestParam Boolean verbose) {
+        log.info(String.format("%s -> %s(%s) & verbose = %b", this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName(), isbn, verbose));
 
         return ResponseEntity.ok(bookService.getBook(isbn, verbose));
     }

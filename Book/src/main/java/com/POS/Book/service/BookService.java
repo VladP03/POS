@@ -25,11 +25,23 @@ public class BookService {
 
     private final BookRepository bookRepository;
 
-    public BookDTO getBook(String isbn, Boolean verbose) {
+    public BookDTO getBook(String isbn) {
         log.info(String.format("%s -> %s(%s)", this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName(), isbn));
 
         return BookAdapter.toDTO(bookRepository.findByIsbn(isbn)
                 .orElseThrow(() -> new IsbnNotFoundException(isbn)));
+    }
+
+    public BookPartially getBook(String isbn, Boolean verbose) {
+        log.info(String.format("%s -> %s(%s)", this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName(), isbn));
+
+        BookDTO bookDTO = getBook(isbn);
+
+        return BookPartially.builder()
+                .isbn(bookDTO.getIsbn())
+                .title(bookDTO.getTitle())
+                .publisher(bookDTO.getPublisher())
+                .build();
     }
 
     @Validated(OnCreate.class)
