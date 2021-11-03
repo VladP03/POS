@@ -7,6 +7,7 @@ import com.POS.Book.service.AuthorService;
 import com.POS.Book.service.BookService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +29,9 @@ public class BookController {
     public ResponseEntity<BookDTO> getBook(@PathVariable(name = "ISBN") String isbn) {
         log.info(String.format("%s -> %s(%s)", this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName(), isbn));
 
-        return ResponseEntity.ok(bookService.getBook(isbn));
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(bookService.getBook(isbn));
     }
 
     @GetMapping(value = "/book/{ISBN}", params = "verbose", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -37,7 +40,9 @@ public class BookController {
             @RequestParam Boolean verbose) {
         log.info(String.format("%s -> %s(%s) & verbose = %b", this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName(), isbn, verbose));
 
-        return ResponseEntity.ok(bookService.getBook(isbn, verbose));
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(bookService.getBook(isbn, verbose));
     }
 
     @GetMapping(value = "/books", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -55,13 +60,17 @@ public class BookController {
                 .year(year)
                 .build();
 
-        return ResponseEntity.ok(bookService.getBooks(bookFilter));
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(bookService.getBooks(bookFilter));
     }
 
     @PostMapping(value = "/book", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<BookDTO> createBook(@Valid @RequestBody BookDTO bookDTO) {
         log.info(String.format("%s -> %s(%s)", this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName(), bookDTO.toString()));
 
-        return ResponseEntity.ok(bookService.createBook(bookDTO));
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(bookService.createBook(bookDTO));
     }
 }
