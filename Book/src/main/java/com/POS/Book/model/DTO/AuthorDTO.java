@@ -1,4 +1,4 @@
-package com.POS.Book.model;
+package com.POS.Book.model.DTO;
 
 import com.POS.Book.model.validation.OnCreate;
 import com.POS.Book.model.validation.OnUpdate;

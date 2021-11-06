@@ -1,6 +1,6 @@
 package com.POS.Book.service.BookQueryParam.chainPageDisplay;
 
-import com.POS.Book.model.BookDTO;
+import com.POS.Book.model.DTO.BookDTO;
 import com.POS.Book.model.adapter.BookAdapter;
 import com.POS.Book.model.filter.BookFilter;
 import com.POS.Book.repository.book.BookRepository;

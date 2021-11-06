@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class ExceptionHandlerAdvice {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     public ApiError handleMethodArgumentNotValid(MethodArgumentNotValidException exception) {
         String errorMessage = exception.getBindingResult().getAllErrors().get(0).getDefaultMessage();
@@ -30,7 +29,6 @@ public class ExceptionHandlerAdvice {
     }
 
     @ExceptionHandler(IsbnNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
     public ApiError handleIsbnNotFoundException(IsbnNotFoundException exception) {
         String errorMessage = "Could not found this ISBN: " + exception.getMessage();
@@ -46,7 +44,6 @@ public class ExceptionHandlerAdvice {
     }
 
     @ExceptionHandler(AuthorNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
     public ApiError handleAuthorNotFoundException(AuthorNotFoundException exception) {
         String errorMessage = "Could not found an author " + exception.getMessage();
@@ -62,7 +59,6 @@ public class ExceptionHandlerAdvice {
     }
 
     @ExceptionHandler(TitleUniqueException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     public ApiError handleTitleUniqueException(TitleUniqueException exception) {
         String errorMessage = "Title: " + exception.getMessage() + " already exists";

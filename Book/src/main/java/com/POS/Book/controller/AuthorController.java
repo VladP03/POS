@@ -1,6 +1,6 @@
 package com.POS.Book.controller;
 
-import com.POS.Book.model.AuthorDTO;
+import com.POS.Book.model.DTO.AuthorDTO;
 import com.POS.Book.model.filter.AuthorFilter;
 import com.POS.Book.service.AuthorService;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +35,7 @@ public class AuthorController {
             @RequestParam String name,
             @RequestParam(required = false) Boolean match
     ) {
-        log.info(String.format("%s -> %s", this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName()));
+        log.info(String.format("%s -> %s with name = %s and match = %b", this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName(), name, match));
 
         AuthorFilter authorFilter = AuthorFilter.builder()
                 .name(name)
@@ -49,7 +49,7 @@ public class AuthorController {
 
     @PostMapping(value = "/author", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AuthorDTO> createAuthor(@Valid @RequestBody AuthorDTO authorDTO) {
-        log.info(String.format("%s -> createAuthor(%s)", this.getClass().getSimpleName(), authorDTO.toString()));
+        log.info(String.format("%s -> %s(%s)", this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName(), authorDTO.toString()));
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)

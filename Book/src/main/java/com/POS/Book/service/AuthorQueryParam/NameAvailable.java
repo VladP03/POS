@@ -1,6 +1,6 @@
 package com.POS.Book.service.AuthorQueryParam;
 
-import com.POS.Book.model.AuthorDTO;
+import com.POS.Book.model.DTO.AuthorDTO;
 import com.POS.Book.model.adapter.AuthorAdapter;
 import com.POS.Book.model.filter.AuthorFilter;
 import com.POS.Book.repository.author.AuthorRepository;

@@ -1,17 +1,19 @@
-package com.POS.Book.model;
+package com.POS.Book.model.DTO;
 
+import com.POS.Book.model.Book;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 
 @Data
 @Builder
 @AllArgsConstructor
-public class BookDTO {
+public class BookDTO implements Book {
 
     @NotEmpty(message = "Book's ISBN can not be null or empty")
     private String isbn;
@@ -23,6 +25,7 @@ public class BookDTO {
     private String publisher;
 
     @NotNull(message = "Book's year can not be null")
+    @Positive(message = "Book's year can not be negative")
     private Integer year;
 
     @NotEmpty(message = "Book's genre can not be null or empty")

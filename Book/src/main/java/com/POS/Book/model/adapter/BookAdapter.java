@@ -1,6 +1,6 @@
 package com.POS.Book.model.adapter;
 
-import com.POS.Book.model.BookDTO;
+import com.POS.Book.model.DTO.BookDTO;
 import com.POS.Book.repository.book.Book;
 import lombok.experimental.UtilityClass;
 
