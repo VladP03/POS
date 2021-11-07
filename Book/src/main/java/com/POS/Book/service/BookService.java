@@ -7,9 +7,9 @@ import com.POS.Book.model.filter.BookFilter;
 import com.POS.Book.model.partially.BookPartially;
 import com.POS.Book.model.validation.OnCreate;
 import com.POS.Book.repository.book.BookRepository;
+import com.POS.Book.service.BookQueryParam.*;
 import com.POS.Book.service.exception.book.NotFound.IsbnNotFoundException;
 import com.POS.Book.service.exception.book.unique.TitleUniqueException;
-import com.POS.Book.service.BookQueryParam.ChainOfResponsability;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -61,7 +61,7 @@ public class BookService {
     public List<BookDTO> getBooks(BookFilter bookFilter) {
         log.info(String.format("%s -> %s(%s)", this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName(), bookFilter.toString()));
 
-        return new ChainOfResponsability().decider(bookFilter).run(bookFilter, bookRepository);
+        return new ChainOfResponsability().getFirstChain().run(bookFilter, bookRepository);
     }
 
     private void checkTitleForUnicity(String title) {

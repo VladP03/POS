@@ -1,5 +1,6 @@
 package com.POS.Book.repository.book;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -12,8 +13,8 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 
     boolean existsByTitle(String title);
 
-    List<Book> findByGenre(String genre);
-    List<Book> findByYear(Integer year);
+    List<Book> findByGenre(String genre, Pageable pageable);
+    List<Book> findByYear(Integer year, Pageable pageable);
 
-    List<Book> findByGenreAndYear(String genre, Integer year);
+    List<Book> findByGenreAndYear(String genre, Integer year, Pageable pageable);
 }

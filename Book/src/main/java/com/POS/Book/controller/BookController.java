@@ -26,6 +26,7 @@ public class BookController {
     private final BookService bookService;
     private final AuthorService authorService;
 
+
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "404", description = "NOT_FOUND")
@@ -42,6 +43,7 @@ public class BookController {
                 .body(bookService.getBook(isbn, verbose));
     }
 
+
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "404", description = "NOT_FOUND")
@@ -49,11 +51,10 @@ public class BookController {
     @GetMapping(value = "/books",
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<BookDTO>> getBooks(
-            @RequestParam(required = false) Integer page,
-            @RequestParam(required = false) Integer items_per_page,
+            @RequestParam(required = false, defaultValue = "0") Integer page,
+            @RequestParam(required = false, defaultValue = "1") Integer items_per_page,
             @RequestParam(required = false) String genre,
             @RequestParam(required = false) Integer year) {
-        log.info(String.format("%s -> %s ->", this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName()));
 
         BookFilter bookFilter = BookFilter.builder()
                 .page(page)
@@ -62,13 +63,17 @@ public class BookController {
                 .year(year)
                 .build();
 
+        log.info(String.format("%s -> %s(%s)", this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName(), bookFilter.toString()));
+
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(bookService.getBooks(bookFilter));
     }
 
+
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "CREATED")
+            @ApiResponse(responseCode = "201", description = "CREATED"),
+            @ApiResponse(responseCode = "400", description = "BAD_REQUEST")
     })
     @PostMapping(value = "/book",
             consumes = MediaType.APPLICATION_JSON_VALUE,

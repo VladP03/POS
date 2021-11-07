@@ -3,12 +3,13 @@ package com.POS.Book.service.BookQueryParam.chainGenreYear;
 import com.POS.Book.model.DTO.BookDTO;
 import com.POS.Book.model.adapter.BookAdapter;
 import com.POS.Book.model.filter.BookFilter;
-import com.POS.Book.repository.book.Book;
 import com.POS.Book.repository.book.BookRepository;
-import com.POS.Book.service.exception.book.YearNotFoundException;
 import com.POS.Book.service.BookQueryParam.Chain;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class YearAvailable implements Chain {
 
@@ -21,16 +22,20 @@ public class YearAvailable implements Chain {
 
     @Override
     public List<BookDTO> run(BookFilter bookFilter, BookRepository bookRepository) {
-        if (bookFilter.getYear() != null) {
-            List<Book> bookList = bookRepository.findByYear(bookFilter.getYear());
+        if (isNotNull(bookFilter.getYear())) {
+            Integer year = bookFilter.getYear();
 
-            if (!bookList.isEmpty()) {
-                return BookAdapter.toDTOList(bookList);
-            } else {
-                throw new YearNotFoundException(bookFilter.getYear());
-            }
+            Integer page = bookFilter.getPage();
+            Integer items_per_page = bookFilter.getItems_per_page();
+
+            Pageable pageable = PageRequest.of(page, items_per_page);
+            return BookAdapter.toDTOList(bookRepository.findByYear(year, pageable).stream().collect(Collectors.toList()));
         } else {
             return nextChain.run(bookFilter, bookRepository);
         }
+    }
+
+    private boolean isNotNull(Integer value) {
+        return value != null;
     }
 }
