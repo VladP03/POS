@@ -1,4 +1,4 @@
-package com.POS.Book.service.exception.book;
+package com.POS.Book.service.exception.book.NotFound;
 
 import lombok.Getter;
 
