@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Data
 @Entity
@@ -28,5 +29,6 @@ public class BookAuthor {
     @JoinColumn(referencedColumnName = "id")
     private Author author;
 
+    @NotNull(message = "Author's index can not be null")
     private Integer position;
 }
