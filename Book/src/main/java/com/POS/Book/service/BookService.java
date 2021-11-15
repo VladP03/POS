@@ -8,6 +8,7 @@ import com.POS.Book.model.partially.BookPartially;
 import com.POS.Book.model.validation.OnCreate;
 import com.POS.Book.repository.book.BookRepository;
 import com.POS.Book.service.BookQueryParam.*;
+import com.POS.Book.service.exception.book.NotFound.BookNotFoundException;
 import com.POS.Book.service.exception.book.NotFound.IsbnNotFoundException;
 import com.POS.Book.service.exception.book.unique.TitleUniqueException;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +43,7 @@ public class BookService {
         return bookDTO;
     }
 
-    private BookDTO getBook(String isbn) {
+    public BookDTO getBook(String isbn) {
         log.info(String.format("%s -> %s(%s)", this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName(), isbn));
 
         return BookAdapter.toDTO(bookRepository.findByIsbn(isbn)
@@ -61,7 +62,13 @@ public class BookService {
     public List<BookDTO> getBooks(BookFilter bookFilter) {
         log.info(String.format("%s -> %s(%s)", this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName(), bookFilter.toString()));
 
-        return new ChainOfResponsability().getFirstChain().run(bookFilter, bookRepository);
+        List<BookDTO> bookDTOList = new ChainOfResponsability().getFirstChain().run(bookFilter, bookRepository);
+
+        if (bookDTOList.isEmpty()) {
+            throw new BookNotFoundException(bookFilter.toString());
+        }
+
+        return bookDTOList;
     }
 
     private void checkTitleForUnicity(String title) {
