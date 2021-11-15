@@ -2,17 +2,13 @@ package com.POS.Book.model.DTO;
 
 import com.POS.Book.model.validation.OnCreate;
 import com.POS.Book.model.validation.OnUpdate;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 
+@Data
 @Builder
-@Getter
-@Setter
 @AllArgsConstructor
 public class AuthorDTO {
 

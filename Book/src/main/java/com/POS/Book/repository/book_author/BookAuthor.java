@@ -11,24 +11,25 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Data
-@Entity
-@Table(name = "book_author")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity(name = "Book_Author")
+@Table(name = "books_authors")
 public class BookAuthor {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
 
-    @ManyToOne
-    @JoinColumn(referencedColumnName = "isbn")
+    @EmbeddedId
+    private BookAuthorId id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId("bookIsbn")
     private Book book;
 
-    @ManyToOne
-    @JoinColumn(referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId("authorId")
     private Author author;
 
     @NotNull(message = "Author's index can not be null")
-    private Integer position;
+    @Column(name = "author_index")
+    private Integer index;
 }

@@ -21,9 +21,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AuthorService {
 
-    private final AuthorRepository authorRepository;
-
     private static final String logInfoTemplate = "%s -> %s(%s)";
+    private final BookService bookService;
+    private final AuthorRepository authorRepository;
 
     public AuthorDTO getAuthor(Long id) {
         log.info(String.format(logInfoTemplate, this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName(), id));
@@ -31,6 +31,7 @@ public class AuthorService {
         return AuthorAdapter.toDTO(authorRepository.findById(id)
                 .orElseThrow(() -> new AuthorNotFoundException(id.toString())));
     }
+
 
     public List<AuthorDTO> getAuthors(AuthorFilter authorFilter) {
         log.info(String.format(logInfoTemplate, this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName(), authorFilter.toString()));

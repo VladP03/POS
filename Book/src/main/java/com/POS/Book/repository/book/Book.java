@@ -1,7 +1,10 @@
 package com.POS.Book.repository.book;
 
 import com.POS.Book.repository.book_author.BookAuthor;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -11,19 +14,20 @@ import javax.validation.constraints.PositiveOrZero;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity(name = "Book")
-@Table(name = "book")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity(name = "Book")
+@Table(name = "books")
 public class Book {
 
     @Id
+    @Column(name = "ISBN")
     private String isbn;
 
-    @Column(unique = true)
     @NotEmpty(message = "Book's title can not be null or empty")
+    @Column(unique = true)
     private String title;
 
     @NotEmpty(message = "Book's publisher can not be null or empty")
@@ -46,7 +50,8 @@ public class Book {
 
     @OneToMany(
             mappedBy = "book",
-            cascade = CascadeType.ALL
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
     )
     private List<BookAuthor> authorList = new ArrayList<>();
 }
