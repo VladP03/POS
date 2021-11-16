@@ -9,13 +9,23 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Log4j2
 @RestController
@@ -33,14 +43,25 @@ public class BookController {
     })
     @GetMapping(value = "/book/{ISBN}",
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Book> getBook(
+    public ResponseEntity<?> getBook(
             @PathVariable(name = "ISBN") String isbn,
-            @RequestParam(required = false) Boolean verbose) {
+            @RequestParam(defaultValue = "false") Boolean verbose) {
         log.info(String.format("%s -> %s(%s) & verbose = %b", this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName(), isbn, verbose));
 
-        return ResponseEntity
+        ResponseEntity<Book> responseEntity;
+        EntityModel<Book> resource;
+
+        responseEntity = ResponseEntity
                 .status(HttpStatus.OK)
                 .body(bookService.getBook(isbn, verbose));
+        resource = EntityModel.of(Objects.requireNonNull(responseEntity.getBody()));
+
+        Link selfLink = linkTo(methodOn(BookController.class).getBook(isbn, verbose)).withSelfRel().withType("GET");
+        Link option1 = linkTo(methodOn(BookController.class).getBook(isbn, !verbose)).withRel("book collection").withType("GET");
+        resource.add(selfLink);
+        resource.add(option1);
+
+        return new ResponseEntity<>(resource, responseEntity.getStatusCode());
     }
 
 
@@ -50,9 +71,9 @@ public class BookController {
     })
     @GetMapping(value = "/books",
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<BookDTO>> getBooks(
-            @RequestParam(required = false, defaultValue = "0") Integer page,
-            @RequestParam(required = false, defaultValue = "1") Integer items_per_page,
+    public ResponseEntity<?> getBooks(
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "5") Integer items_per_page,
             @RequestParam(required = false) String genre,
             @RequestParam(required = false) Integer year) {
 
@@ -65,9 +86,27 @@ public class BookController {
 
         log.info(String.format("%s -> %s(%s)", this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName(), bookFilter.toString()));
 
-        return ResponseEntity
+        ResponseEntity<?> responseEntity;
+        CollectionModel<?> resource;
+
+        List<BookDTO> bookDTOList = bookService.getBooks(bookFilter);
+
+        List<EntityModel<BookDTO>> bookDTOListModified = bookDTOList.stream()
+                .map(book -> EntityModel.of(book,
+                        linkTo(methodOn(BookController.class).getBook(book.getIsbn(), true)).withRel("book collection").withType("GET"),
+                        linkTo(methodOn(BookController.class).getBook(book.getIsbn(), false)).withRel("book collection").withType("GET")))
+                .collect(Collectors.toList());
+
+        responseEntity = ResponseEntity
                 .status(HttpStatus.OK)
-                .body(bookService.getBooks(bookFilter));
+                .body(bookDTOListModified);
+
+        resource = CollectionModel.of(Collections.singleton(Objects.requireNonNull(responseEntity.getBody())));
+
+        Link selfLink = linkTo(methodOn(BookController.class).getBooks(page, items_per_page, genre, year)).withSelfRel();
+        resource.add(selfLink.expand());
+
+        return new ResponseEntity<>(resource, responseEntity.getStatusCode());
     }
 
 
