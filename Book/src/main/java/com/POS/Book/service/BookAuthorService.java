@@ -15,6 +15,7 @@ import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @Log4j2
 @Service
@@ -28,9 +29,10 @@ public class BookAuthorService {
 
     @Validated(OnCreate.class)
     public void putAuthorPerBook(String isbn, @Valid List<AuthorDTO> authorDTOList) {
-//        log.info(String.format(logInfoTemplate, this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName(), authorDTO.toString()));
+        log.info(String.format("%s -> %s(isbn: %s, authorList: %s)", this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName(), isbn, authorDTOList.toString()));
 
         BookDTO bookDTO = bookService.getBook(isbn);
+        int index = getLastIndexOfBookAuthor(bookDTO);
 
         for (int i=0;i<authorDTOList.size();i++) {
             bookAuthorRepository.save(
@@ -38,9 +40,19 @@ public class BookAuthorService {
                             .id(new BookAuthorId())
                             .book(BookAdapter.fromDTO(bookDTO))
                             .author(AuthorAdapter.fromDTO(authorService.createAuthor(authorDTOList.get(i))))
-                            .index(i+1)
+                            .index(index+i+1)
                             .build()
             );
         }
+    }
+
+    private int getLastIndexOfBookAuthor(BookDTO bookDTO) {
+        Optional<BookAuthor> bookAuthorByIndexDesc = bookAuthorRepository.findTopByBookOrderByIndexDesc(BookAdapter.fromDTO(bookDTO));
+
+        if (bookAuthorByIndexDesc.isPresent()) {
+            return bookAuthorByIndexDesc.get().getIndex();
+        }
+
+        return 0;
     }
 }
