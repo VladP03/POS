@@ -22,7 +22,7 @@ public class BookAuthorController {
     private final BookAuthorService bookAuthorService;
 
 
-    @PutMapping(value = "/{ISBN}/authors",
+    @PostMapping(value = "/{ISBN}/authors",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity putAuthorPerBook(
@@ -31,7 +31,7 @@ public class BookAuthorController {
 
         log.info(String.format("%s -> %s(%s, %s)", this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName(), isbn.toString(), authorDTOList.toString()));
 
-        bookAuthorService.putAuthorPerBook(isbn, authorDTOList);
+        bookAuthorService.postAuthorPerBook(isbn, authorDTOList);
 
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }

@@ -28,7 +28,7 @@ public class BookAuthorService {
     private final BookAuthorRepository bookAuthorRepository;
 
     @Validated(OnCreate.class)
-    public void putAuthorPerBook(String isbn, @Valid List<AuthorDTO> authorDTOList) {
+    public void postAuthorPerBook(String isbn, @Valid List<AuthorDTO> authorDTOList) {
         log.info(String.format("%s -> %s(isbn: %s, authorList: %s)", this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName(), isbn, authorDTOList.toString()));
 
         BookDTO bookDTO = bookService.getBook(isbn);
