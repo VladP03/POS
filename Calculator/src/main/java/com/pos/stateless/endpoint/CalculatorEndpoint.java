@@ -4,8 +4,7 @@ import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
-import stateless.pos.com.calculator.AddRequest;
-import stateless.pos.com.calculator.AddResponse;
+import stateless.pos.com.calculator.*;
 
 @Endpoint
 public class CalculatorEndpoint {
@@ -18,6 +17,26 @@ public class CalculatorEndpoint {
         AddResponse result = new AddResponse();
 
         result.setResult(input.getParam1().add(input.getParam2()));
+
+        return result;
+    }
+
+    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "divideRequest")
+    @ResponsePayload
+    public DivideResponse divide(@RequestPayload DivideRequest input) {
+        DivideResponse result = new DivideResponse();
+
+        result.setResult(input.getParam1().divide(input.getParam2()));
+
+        return result;
+    }
+
+    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "multipleRequest")
+    @ResponsePayload
+    public MultipleResponse divide(@RequestPayload MultipleRequest input) {
+        MultipleResponse result = new MultipleResponse();
+
+        result.setResult(input.getParam1().multiply(input.getParam2()));
 
         return result;
     }

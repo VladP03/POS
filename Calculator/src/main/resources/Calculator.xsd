@@ -21,7 +21,7 @@
         </xs:complexType>
     </xs:element>
 
-    <xs:element name="devideRequest">
+    <xs:element name="divideRequest">
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="param1" type="xs:decimal"/>
@@ -30,7 +30,7 @@
         </xs:complexType>
     </xs:element>
 
-    <xs:element name="devideResponse">
+    <xs:element name="divideResponse">
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="result" type="xs:decimal"/>
