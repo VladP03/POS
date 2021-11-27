@@ -1,0 +1,14 @@
+services:
+  mysqldb:
+    image: mysql:8.0.27
+    container_name: POS_MySQL_BookAuthors
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: MYSQL_RANDOM_ROOT_PASSWORD
+    cap_add:
+      - SYS_NICE  # CAP_SYS_NICE
+
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - 3306:3306
