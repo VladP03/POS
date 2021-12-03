@@ -16,7 +16,7 @@ import org.springframework.xml.xsd.XsdSchema;
 public class WebServiceConfig {
     @SuppressWarnings({"unchecked", "rawtypes"})
     @Bean
-    public ServletRegistrationBean messageDispatcherServlet(ApplicationContext applicationContext) {
+    public ServletRegistrationBean messageDispatcherServletCalculator(ApplicationContext applicationContext) {
         MessageDispatcherServlet result = new MessageDispatcherServlet();
 
         result.setApplicationContext(applicationContext);
@@ -25,8 +25,19 @@ public class WebServiceConfig {
         return new ServletRegistrationBean(result, "/sample");
     }
 
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    @Bean
+    public ServletRegistrationBean messageDispatcherServletData(ApplicationContext applicationContext) {
+        MessageDispatcherServlet result = new MessageDispatcherServlet();
+
+        result.setApplicationContext(applicationContext);
+        result.setTransformWsdlLocations(true);
+
+        return new ServletRegistrationBean(result, "/data");
+    }
+
     @Bean(name = "calculator")
-    public DefaultWsdl11Definition defaultWsdl11Definition(XsdSchema calculatorSchema) {
+    public DefaultWsdl11Definition defaultWsdl11DefinitionCalculator(XsdSchema calculatorSchema) {
         DefaultWsdl11Definition result = new DefaultWsdl11Definition();
 
         result.setPortTypeName("CalculatorPort");
@@ -37,8 +48,25 @@ public class WebServiceConfig {
         return result;
     }
 
+    @Bean(name = "data")
+    public DefaultWsdl11Definition defaultWsdl11DefinitionData(XsdSchema dataSchema) {
+        DefaultWsdl11Definition result = new DefaultWsdl11Definition();
+
+        result.setPortTypeName("DataPort");
+        result.setLocationUri("/data");
+        result.setTargetNamespace("http://com.pos.stateless/data");
+        result.setSchema((dataSchema));
+
+        return result;
+    }
+
     @Bean
     public XsdSchema calculatorSchema() {
         return new SimpleXsdSchema(new ClassPathResource("Calculator.xsd"));
+    }
+
+    @Bean
+    public XsdSchema dataSchema() {
+        return new SimpleXsdSchema(new ClassPathResource("Data.xsd"));
     }
 }
