@@ -1,0 +1,19 @@
+version: '3.7'
+
+services:
+  mongodb:
+    image: mongo:4.4
+    container_name: POS_MongoDB_Orders
+    restart: always
+    environment:
+      MONGO_INITDB_DATABASE: orders
+      MONGO_INITDB_ROOT_USERNAME: ${ROOT_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${ROOT_PASSWORD}
+    ports:
+      - 27017:27017
+
+#    cap_add:
+#      - SYS_NICE  # CAP_SYS_NICE
+
+    volumes:
+      - ./init.js:/docker-entrypoint-initdb.d/init.js:ro
