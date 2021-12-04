@@ -12,7 +12,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @Log4j2
@@ -56,21 +55,5 @@ public class AuthorController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(authorService.getAuthors(authorFilter));
-    }
-
-
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "CREATED"),
-            @ApiResponse(responseCode = "400", description = "BAD_REQUEST")
-    })
-    @PostMapping(value = "/author",
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<AuthorDTO> createAuthor(@Valid @RequestBody AuthorDTO authorDTO) {
-        log.info(String.format("%s -> %s(%s)", this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName(), authorDTO.toString()));
-
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(authorService.createAuthor(authorDTO));
     }
 }

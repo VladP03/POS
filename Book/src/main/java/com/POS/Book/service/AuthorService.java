@@ -6,7 +6,7 @@ import com.POS.Book.model.filter.AuthorFilter;
 import com.POS.Book.model.validation.OnCreate;
 import com.POS.Book.repository.author.AuthorRepository;
 import com.POS.Book.service.AuthorQueryParam.ChainOfResponsability;
-import com.POS.Book.service.exception.author.AuthorNotFoundException;
+import com.POS.Book.service.exception.author.NotFound.AuthorNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -29,7 +29,7 @@ public class AuthorService {
         log.info(String.format(logInfoTemplate, this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName(), id));
 
         return AuthorAdapter.toDTO(authorRepository.findById(id)
-                .orElseThrow(() -> new AuthorNotFoundException(id.toString())));
+                .orElseThrow(() -> new AuthorNotFoundException(String.format("with id %d", id))));
     }
 
 
