@@ -23,8 +23,8 @@ public class BookExceptionHandlerAdvice {
 
         log.error("TitleUniqueException has been thrown with the following message: " + errorMessage);
 
-        return ResponseEntity.
-                status(HttpStatus.BAD_REQUEST)
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
                 .body(ApiError.builder()
                         .httpStatus(HttpStatus.BAD_REQUEST)
                         .errorMessage(errorMessage)
@@ -40,8 +40,8 @@ public class BookExceptionHandlerAdvice {
 
         log.error("IsbnNotFoundException has been thrown with the following message: " + errorMessage);
 
-        return ResponseEntity.
-                status(HttpStatus.NOT_FOUND)
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
                 .body(ApiError.builder()
                         .httpStatus(HttpStatus.NOT_FOUND)
                         .errorMessage(errorMessage)
@@ -57,8 +57,8 @@ public class BookExceptionHandlerAdvice {
 
         log.error("YearNotFoundException has been thrown with the following message: " + errorMessage);
 
-        return ResponseEntity.
-                status(HttpStatus.NOT_FOUND)
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
                 .body(ApiError.builder()
                         .httpStatus(HttpStatus.NOT_FOUND)
                         .errorMessage(errorMessage)
@@ -74,8 +74,8 @@ public class BookExceptionHandlerAdvice {
 
         log.error("GenreNotFoundException has been thrown with the following message: " + errorMessage);
 
-        return ResponseEntity.
-                status(HttpStatus.NOT_FOUND)
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
                 .body(ApiError.builder()
                         .httpStatus(HttpStatus.NOT_FOUND)
                         .errorMessage(errorMessage)
@@ -91,8 +91,8 @@ public class BookExceptionHandlerAdvice {
 
         log.error("BookNotFoundException has been thrown with the following message: " + errorMessage);
 
-        return ResponseEntity.
-                status(HttpStatus.NOT_FOUND)
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
                 .body(ApiError.builder()
                         .httpStatus(HttpStatus.NOT_FOUND)
                         .errorMessage(errorMessage)

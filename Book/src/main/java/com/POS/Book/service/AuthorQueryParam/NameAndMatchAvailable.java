@@ -5,7 +5,7 @@ import com.POS.Book.model.adapter.AuthorAdapter;
 import com.POS.Book.model.filter.AuthorFilter;
 import com.POS.Book.repository.author.Author;
 import com.POS.Book.repository.author.AuthorRepository;
-import com.POS.Book.service.exception.author.AuthorNotFoundException;
+import com.POS.Book.service.exception.author.NotFound.AuthorNotFoundException;
 
 import java.util.Collections;
 import java.util.List;
