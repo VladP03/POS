@@ -26,7 +26,7 @@ public class BookAuthorController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity putAuthorPerBook(
             @PathVariable(name = "ISBN") String isbn,
-            @RequestBody List<@Valid AuthorDTO> authorDTOList) {
+            @RequestBody List<AuthorDTO> authorDTOList) {
 
         log.info(String.format("%s -> %s(%s, %s)", this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName(), isbn, authorDTOList.toString()));
 

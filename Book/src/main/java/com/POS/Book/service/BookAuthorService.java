@@ -13,6 +13,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
@@ -27,23 +28,31 @@ public class BookAuthorService {
     private final AuthorService authorService;
     private final BookAuthorRepository bookAuthorRepository;
 
+    @Transactional
     @Validated(OnCreate.class)
-    public void postAuthorPerBook(String isbn, List<@Valid AuthorDTO> authorDTOList) {
+    public void postAuthorPerBook(String isbn, List<AuthorDTO> authorDTOList) {
         log.info(String.format("%s -> %s(isbn: %s, authorList: %s)", this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName(), isbn, authorDTOList.toString()));
 
         BookDTO bookDTO = bookService.getBook(isbn);
-        int index = getLastIndexOfBookAuthor(bookDTO);
 
-        for (int i=0;i<authorDTOList.size();i++) {
-            bookAuthorRepository.save(
-                    BookAuthor.builder()
-                            .id(new BookAuthorId())
-                            .book(BookAdapter.fromDTO(bookDTO))
-                            .author(AuthorAdapter.fromDTO(authorService.createAuthor(authorDTOList.get(i))))
-                            .index(index+i+1)
-                            .build()
-            );
+        for (AuthorDTO authorDTO : authorDTOList) {
+            save(bookDTO, authorDTO);
         }
+    }
+
+    private void save(BookDTO bookDTO, AuthorDTO authorDTO) {
+        bookAuthorRepository.save(
+                BookAuthor.builder()
+                        .id(new BookAuthorId())
+                        .book(BookAdapter.fromDTO(bookDTO))
+                        .author(AuthorAdapter.fromDTO(authorService.createAuthor(authorDTO)))
+                        .index(getLastIndexOfBookAuthor(bookDTO))
+                        .build()
+        );
+    }
+
+    private boolean existsBookByISBN(String isbn) {
+        return bookService.getBook(isbn) != null;
     }
 
     private int getLastIndexOfBookAuthor(BookDTO bookDTO) {
