@@ -11,7 +11,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-public class NameAndMatchAvailable implements Chain{
+public class NameAndMatchAvailable implements Chain {
 
     private Chain nextChain;
 

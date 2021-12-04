@@ -1,8 +1,8 @@
 package com.POS.Book.service.BookQueryParam;
 
+import com.POS.Book.service.BookQueryParam.chainGenreYear.DefaultAvailable;
 import com.POS.Book.service.BookQueryParam.chainGenreYear.GenreAndYearAvailable;
 import com.POS.Book.service.BookQueryParam.chainGenreYear.GenreAvailable;
-import com.POS.Book.service.BookQueryParam.chainGenreYear.DefaultAvailable;
 import com.POS.Book.service.BookQueryParam.chainGenreYear.YearAvailable;
 
 public class ChainOfResponsability {

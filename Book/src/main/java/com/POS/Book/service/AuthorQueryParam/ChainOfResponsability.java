@@ -5,7 +5,7 @@ import lombok.Getter;
 @Getter
 public class ChainOfResponsability {
 
-    private Chain firstChain;
+    private final Chain firstChain;
 
     public ChainOfResponsability() {
         firstChain = new NameAndMatchAvailable();

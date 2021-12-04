@@ -9,7 +9,7 @@ import com.POS.Book.service.exception.author.AuthorNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class NameAvailable implements Chain{
+public class NameAvailable implements Chain {
 
     private Chain nextChain;
 

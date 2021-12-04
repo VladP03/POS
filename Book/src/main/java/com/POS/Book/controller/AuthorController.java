@@ -45,8 +45,7 @@ public class AuthorController {
     @GetMapping(value = "/authors", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<AuthorDTO>> getAuthor(
             @RequestParam String name,
-            @RequestParam(required = false) Boolean match
-    ) {
+            @RequestParam(required = false) Boolean match) {
         log.info(String.format("%s -> %s with name = %s and match = %b", this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName(), name, match));
 
         AuthorFilter authorFilter = AuthorFilter.builder()

@@ -1,7 +1,6 @@
 package com.POS.Book.controller;
 
 import com.POS.Book.model.DTO.AuthorDTO;
-import com.POS.Book.model.adapter.AuthorAdapter;
 import com.POS.Book.service.BookAuthorService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -29,7 +28,7 @@ public class BookAuthorController {
             @PathVariable(name = "ISBN") String isbn,
             @RequestBody @Valid List<AuthorDTO> authorDTOList) {
 
-        log.info(String.format("%s -> %s(%s, %s)", this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName(), isbn.toString(), authorDTOList.toString()));
+        log.info(String.format("%s -> %s(%s, %s)", this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName(), isbn, authorDTOList.toString()));
 
         bookAuthorService.postAuthorPerBook(isbn, authorDTOList);
 

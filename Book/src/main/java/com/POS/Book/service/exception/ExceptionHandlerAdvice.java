@@ -1,7 +1,6 @@
 package com.POS.Book.service.exception;
 
 import com.POS.Book.service.exception.author.AuthorNotFoundException;
-import com.POS.Book.service.exception.book.NotFound.BookNotFoundException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;

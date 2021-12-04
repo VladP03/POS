@@ -7,7 +7,7 @@ import com.POS.Book.model.filter.BookFilter;
 import com.POS.Book.model.partially.BookPartially;
 import com.POS.Book.model.validation.OnCreate;
 import com.POS.Book.repository.book.BookRepository;
-import com.POS.Book.service.BookQueryParam.*;
+import com.POS.Book.service.BookQueryParam.ChainOfResponsability;
 import com.POS.Book.service.exception.book.NotFound.BookNotFoundException;
 import com.POS.Book.service.exception.book.NotFound.IsbnNotFoundException;
 import com.POS.Book.service.exception.book.unique.TitleUniqueException;
