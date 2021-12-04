@@ -4,7 +4,6 @@ import com.POS.Book.model.DTO.AuthorDTO;
 import com.POS.Book.model.DTO.BookDTO;
 import com.POS.Book.model.adapter.AuthorAdapter;
 import com.POS.Book.model.adapter.BookAdapter;
-import com.POS.Book.model.validation.OnCreate;
 import com.POS.Book.repository.book_author.BookAuthor;
 import com.POS.Book.repository.book_author.BookAuthorId;
 import com.POS.Book.repository.book_author.BookAuthorRepository;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import javax.transaction.Transactional;
-import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,7 +27,6 @@ public class BookAuthorService {
     private final BookAuthorRepository bookAuthorRepository;
 
     @Transactional
-    @Validated(OnCreate.class)
     public void postAuthorPerBook(String isbn, List<AuthorDTO> authorDTOList) {
         log.info(String.format("%s -> %s(isbn: %s, authorList: %s)", this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName(), isbn, authorDTOList.toString()));
 
