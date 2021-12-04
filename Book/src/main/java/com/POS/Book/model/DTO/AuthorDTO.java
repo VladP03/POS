@@ -12,8 +12,8 @@ import javax.validation.constraints.Null;
 @AllArgsConstructor
 public class AuthorDTO {
 
-    @Null(message = "Author's id can not be null", groups = {OnCreate.class})
-    @NotNull(message = "Author's id must be null", groups = {OnUpdate.class})
+    @Null(message = "Author's id must be null", groups = {OnCreate.class})
+    @NotNull(message = "Author's id can not be null", groups = {OnUpdate.class})
     private Long id;
 
     @NotNull(message = "Author's first name can not be null")
