@@ -14,7 +14,6 @@ import org.springframework.validation.annotation.Validated;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
 
 @Log4j2
 @Service
@@ -31,34 +30,26 @@ public class BookAuthorService {
         log.info(String.format("%s -> %s(isbn: %s, authorList: %s)", this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName(), isbn, authorDTOList.toString()));
 
         BookDTO bookDTO = bookService.getBook(isbn);
+        Integer index = getLastIndexOfBookAuthor(bookDTO);
 
         for (AuthorDTO authorDTO : authorDTOList) {
-            save(bookDTO, authorDTO);
+            save(bookDTO, authorDTO, ++index);
         }
     }
 
-    private void save(BookDTO bookDTO, AuthorDTO authorDTO) {
+    private void save(BookDTO bookDTO, AuthorDTO authorDTO, Integer index) {
         bookAuthorRepository.save(
                 BookAuthor.builder()
                         .id(new BookAuthorId())
                         .book(BookAdapter.fromDTO(bookDTO))
                         .author(AuthorAdapter.fromDTO(authorService.createAuthor(authorDTO)))
-                        .index(getLastIndexOfBookAuthor(bookDTO))
+                        .index(index)
                         .build()
         );
     }
 
-    private boolean existsBookByISBN(String isbn) {
-        return bookService.getBook(isbn) != null;
-    }
-
-    private int getLastIndexOfBookAuthor(BookDTO bookDTO) {
-        Optional<BookAuthor> bookAuthorByIndexDesc = bookAuthorRepository.findTopByBookOrderByIndexDesc(BookAdapter.fromDTO(bookDTO));
-
-        if (bookAuthorByIndexDesc.isPresent()) {
-            return bookAuthorByIndexDesc.get().getIndex();
-        }
-
-        return 0;
+    private Integer getLastIndexOfBookAuthor(BookDTO bookDTO) {
+        return bookAuthorRepository.findLastAuthorIndexForBookAuthor(BookAdapter.fromDTO(bookDTO))
+                .orElse(0);
     }
 }

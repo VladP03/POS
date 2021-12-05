@@ -23,7 +23,7 @@ public class BookAuthorController {
     @PostMapping(value = "/{ISBN}/authors",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity putAuthorPerBook(
+    public ResponseEntity<?> postAuthorPerBook(
             @PathVariable(name = "ISBN") String isbn,
             @RequestBody List<AuthorDTO> authorDTOList) {
 
@@ -31,6 +31,6 @@ public class BookAuthorController {
 
         bookAuthorService.postAuthorPerBook(isbn, authorDTOList);
 
-        return new ResponseEntity(HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }
