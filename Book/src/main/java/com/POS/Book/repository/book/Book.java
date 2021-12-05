@@ -1,18 +1,18 @@
 package com.POS.Book.repository.book;
 
-import com.POS.Book.repository.book_author.BookAuthor;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
-import java.util.ArrayList;
-import java.util.List;
 
 @Data
 @Builder
@@ -47,11 +47,4 @@ public class Book {
     @NotNull(message = "Book's stock can not be null")
     @PositiveOrZero(message = "Book's stock can not be negative")
     private Integer stock;
-
-    @OneToMany(
-            mappedBy = "book",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
-    )
-    private List<BookAuthor> authorList = new ArrayList<>();
 }

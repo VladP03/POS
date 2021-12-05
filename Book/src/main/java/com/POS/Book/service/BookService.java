@@ -71,6 +71,12 @@ public class BookService {
         return bookDTOList;
     }
 
+    public void deleteBook(String ISBN) {
+        BookDTO bookDTOToDelete = getBook(ISBN);
+
+        bookRepository.delete(BookAdapter.fromDTO(bookDTOToDelete));
+    }
+
     private void checkTitleForUnicity(String title) {
         if (titleIsNotUnique(title)) {
             throw new TitleUniqueException(title);

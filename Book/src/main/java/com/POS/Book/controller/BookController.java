@@ -123,4 +123,18 @@ public class BookController {
                 .status(HttpStatus.CREATED)
                 .body(bookService.createBook(bookDTO));
     }
+
+
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "NO_CONTENT"),
+            @ApiResponse(responseCode = "404", description = "NOT_FOUND")
+    })
+    @DeleteMapping("/{ISBN}")
+    public ResponseEntity<?> deleteBook(@PathVariable String ISBN) {
+        log.info(String.format("%s -> %s(%s)", this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName(), ISBN));
+
+        bookService.deleteBook(ISBN);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }
