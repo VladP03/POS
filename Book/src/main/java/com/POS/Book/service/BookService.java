@@ -5,7 +5,6 @@ import com.POS.Book.model.DTO.BookDTO;
 import com.POS.Book.model.adapter.BookAdapter;
 import com.POS.Book.model.filter.BookFilter;
 import com.POS.Book.model.partially.BookPartially;
-import com.POS.Book.model.validation.OnCreate;
 import com.POS.Book.repository.book.BookRepository;
 import com.POS.Book.service.BookQueryParam.ChainOfResponsability;
 import com.POS.Book.service.exception.book.NotFound.BookNotFoundException;
@@ -13,6 +12,7 @@ import com.POS.Book.service.exception.book.NotFound.IsbnNotFoundException;
 import com.POS.Book.service.exception.book.unique.TitleUniqueException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -50,13 +50,23 @@ public class BookService {
                 .orElseThrow(() -> new IsbnNotFoundException(isbn)));
     }
 
-    @Validated(OnCreate.class)
     public BookDTO createBook(@Valid BookDTO bookDTO) {
         log.info(String.format("%s -> %s(%s)", this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName(), bookDTO.toString()));
 
         checkTitleForUnicity(bookDTO.getTitle());
 
         return BookAdapter.toDTO(bookRepository.save(BookAdapter.fromDTO(bookDTO)));
+    }
+
+    public BookDTO putBook(@Valid BookDTO bookDTO, String ISBN) {
+        log.info(String.format("%s -> %s(%s)", this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName(), bookDTO.toString()));
+
+        BookDTO bookDTOtoUpdate = getBook(ISBN);
+        checkTitleForUnicity(bookDTO.getIsbn());
+        BeanUtils.copyProperties(bookDTO, bookDTOtoUpdate);
+        bookDTOtoUpdate.setIsbn(ISBN);
+
+        return BookAdapter.toDTO(bookRepository.save(BookAdapter.fromDTO(bookDTOtoUpdate)));
     }
 
     public List<BookDTO> getBooks(BookFilter bookFilter) {
@@ -86,5 +96,4 @@ public class BookService {
     private boolean titleIsNotUnique(String title) {
         return bookRepository.existsByTitle(title);
     }
-
 }

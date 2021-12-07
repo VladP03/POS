@@ -124,6 +124,21 @@ public class BookController {
                 .body(bookService.createBook(bookDTO));
     }
 
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "CREATED"),
+            @ApiResponse(responseCode = "400", description = "BAD_REQUEST")
+    })
+    @PutMapping(value = "/book/{ISBN}",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<BookDTO> putBook(@Valid @RequestBody BookDTO bookDTO, @PathVariable String ISBN) {
+        log.info(String.format("%s -> %s(%s)", this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName(), bookDTO.toString()));
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(bookService.putBook(bookDTO, ISBN));
+    }
+
 
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "NO_CONTENT"),
