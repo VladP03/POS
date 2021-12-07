@@ -21,6 +21,7 @@ import javax.validation.Valid;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -126,17 +127,24 @@ public class BookController {
 
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "CREATED"),
+            @ApiResponse(responseCode = "204", description = "NO CONTENT"),
             @ApiResponse(responseCode = "400", description = "BAD_REQUEST")
     })
-    @PutMapping(value = "/book/{ISBN}",
+    @PutMapping(value = "/book",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<BookDTO> putBook(@Valid @RequestBody BookDTO bookDTO, @PathVariable String ISBN) {
+    public ResponseEntity<BookDTO> putBook(@Valid @RequestBody BookDTO bookDTO) {
         log.info(String.format("%s -> %s(%s)", this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName(), bookDTO.toString()));
+
+        Optional<BookDTO> bookDTOOptional = bookService.putBook(bookDTO);
+
+        if (bookDTOOptional.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(bookService.putBook(bookDTO, ISBN));
+                .body(bookDTOOptional.get());
     }
 
 

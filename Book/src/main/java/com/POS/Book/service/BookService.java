@@ -18,6 +18,7 @@ import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @Log4j2
 @Service
@@ -58,15 +59,20 @@ public class BookService {
         return BookAdapter.toDTO(bookRepository.save(BookAdapter.fromDTO(bookDTO)));
     }
 
-    public BookDTO putBook(@Valid BookDTO bookDTO, String ISBN) {
+    public Optional<BookDTO> putBook(@Valid BookDTO bookDTO) {
         log.info(String.format("%s -> %s(%s)", this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName(), bookDTO.toString()));
 
-        BookDTO bookDTOtoUpdate = getBook(ISBN);
-        checkTitleForUnicity(bookDTO.getIsbn());
-        BeanUtils.copyProperties(bookDTO, bookDTOtoUpdate);
-        bookDTOtoUpdate.setIsbn(ISBN);
+        try {
+            BookDTO bookDTOtoUpdate = getBook(bookDTO.getIsbn());
+            checkTitleForUnicity(bookDTO.getTitle());
+            BeanUtils.copyProperties(bookDTO, bookDTOtoUpdate);
 
-        return BookAdapter.toDTO(bookRepository.save(BookAdapter.fromDTO(bookDTOtoUpdate)));
+            bookRepository.save(BookAdapter.fromDTO(bookDTOtoUpdate));
+
+            return Optional.empty();
+        } catch (IsbnNotFoundException exception) {
+            return Optional.of(createBook(bookDTO));
+        }
     }
 
     public List<BookDTO> getBooks(BookFilter bookFilter) {
