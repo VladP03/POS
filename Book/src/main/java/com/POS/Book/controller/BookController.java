@@ -36,7 +36,6 @@ public class BookController {
     private final BookService bookService;
     private final AuthorService authorService;
 
-
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "404", description = "NOT_FOUND")
@@ -48,6 +47,8 @@ public class BookController {
             @RequestParam(defaultValue = "false") Boolean verbose) {
         log.info(String.format("%s -> %s(%s) & verbose = %b", this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName(), isbn, verbose));
 
+        Book book = bookService.getBook(isbn, verbose);
+
         ResponseEntity<Book> responseEntity;
         EntityModel<Book> resource;
 
@@ -56,10 +57,18 @@ public class BookController {
                 .body(bookService.getBook(isbn, verbose));
         resource = EntityModel.of(Objects.requireNonNull(responseEntity.getBody()));
 
+        if (verbose == true) {
+            book = bookService.getBook(isbn, false);
+        }
+
         Link selfLink = linkTo(methodOn(BookController.class).getBook(isbn, verbose)).withSelfRel().withType("GET");
-        Link option1 = linkTo(methodOn(BookController.class).getBook(isbn, !verbose)).withRel("book collection").withType("GET");
+        Link optionGET = linkTo(methodOn(BookController.class).getBook(isbn, !verbose)).withRel("book collection").withType("GET");
+        Link optionPUT = linkTo(methodOn(BookController.class).putBook((BookDTO) book)).withRel("book collection").withType("PUT");
+        Link optionDELETE = linkTo(methodOn(BookController.class).deleteBook(((BookDTO) book).getIsbn())).withRel("book collection").withType("DELETE");
         resource.add(selfLink);
-        resource.add(option1);
+        resource.add(optionGET);
+        resource.add(optionPUT);
+        resource.add(optionDELETE);
 
         return new ResponseEntity<>(resource, responseEntity.getStatusCode());
     }
@@ -93,8 +102,10 @@ public class BookController {
 
         List<EntityModel<BookDTO>> bookDTOListModified = bookDTOList.stream()
                 .map(book -> EntityModel.of(book,
+                        linkTo(methodOn(BookController.class).getBook(book.getIsbn(), false)).withSelfRel().withType("GET"),
                         linkTo(methodOn(BookController.class).getBook(book.getIsbn(), true)).withRel("book collection").withType("GET"),
-                        linkTo(methodOn(BookController.class).getBook(book.getIsbn(), false)).withRel("book collection").withType("GET")))
+                        linkTo(methodOn(BookController.class).putBook(book)).withRel("book collection").withType("PUT"),
+                        linkTo(methodOn(BookController.class).deleteBook(book.getIsbn())).withRel("book collection").withType("DELETE")))
                 .collect(Collectors.toList());
 
         responseEntity = ResponseEntity
@@ -117,13 +128,31 @@ public class BookController {
     @PostMapping(value = "/book",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<BookDTO> createBook(@Valid @RequestBody BookDTO bookDTO) {
+    public ResponseEntity<?> createBook(@Valid @RequestBody BookDTO bookDTO) {
         log.info(String.format("%s -> %s(%s)", this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName(), bookDTO.toString()));
 
-        return ResponseEntity
+        BookDTO bookDTCreated = bookService.createBook(bookDTO);
+
+        ResponseEntity<BookDTO> responseEntity;
+        EntityModel<BookDTO> resource;
+
+        responseEntity = ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(bookService.createBook(bookDTO));
+                .body(bookDTCreated);
+        resource = EntityModel.of(Objects.requireNonNull(responseEntity.getBody()));
+
+        Link selfLink = linkTo(methodOn(BookController.class).getBook(bookDTCreated.getIsbn(), true)).withRel("book collection").withType("GET");
+        Link optionGET = linkTo(methodOn(BookController.class).getBook(bookDTCreated.getIsbn(), false)).withRel("book collection").withType("GET");
+        Link optionPUT = linkTo(methodOn(BookController.class).putBook(bookDTCreated)).withRel("book collection").withType("PUT");
+        Link optionDELETE = linkTo(methodOn(BookController.class).deleteBook((bookDTCreated.getIsbn()))).withRel("book collection").withType("DELETE");
+        resource.add(selfLink);
+        resource.add(optionGET);
+        resource.add(optionPUT);
+        resource.add(optionDELETE);
+
+        return new ResponseEntity<>(resource, responseEntity.getStatusCode());
     }
+
 
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "CREATED"),
@@ -133,7 +162,7 @@ public class BookController {
     @PutMapping(value = "/book",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<BookDTO> putBook(@Valid @RequestBody BookDTO bookDTO) {
+    public ResponseEntity<?> putBook(@Valid @RequestBody BookDTO bookDTO) {
         log.info(String.format("%s -> %s(%s)", this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName(), bookDTO.toString()));
 
         Optional<BookDTO> bookDTOOptional = bookService.putBook(bookDTO);
@@ -142,9 +171,25 @@ public class BookController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
-        return ResponseEntity
+        ResponseEntity<BookDTO> responseEntity;
+        EntityModel<BookDTO> resource;
+
+        responseEntity = ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(bookDTOOptional.get());
+
+        resource = EntityModel.of(Objects.requireNonNull(responseEntity.getBody()));
+
+        Link selfLink = linkTo(methodOn(BookController.class).getBook(bookDTOOptional.get().getIsbn(), true)).withRel("book collection").withType("GET");
+        Link optionGET = linkTo(methodOn(BookController.class).getBook(bookDTOOptional.get().getIsbn(), false)).withRel("book collection").withType("GET");
+        Link optionPUT = linkTo(methodOn(BookController.class).putBook(bookDTOOptional.get())).withRel("book collection").withType("PUT");
+        Link optionDELETE = linkTo(methodOn(BookController.class).deleteBook((bookDTOOptional.get().getIsbn()))).withRel("book collection").withType("DELETE");
+        resource.add(selfLink);
+        resource.add(optionGET);
+        resource.add(optionPUT);
+        resource.add(optionDELETE);
+
+        return new ResponseEntity<>(resource, responseEntity.getStatusCode());
     }
 
 
