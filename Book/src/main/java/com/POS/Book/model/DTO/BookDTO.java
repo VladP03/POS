@@ -1,7 +1,6 @@
 package com.POS.Book.model.DTO;
 
 import com.POS.Book.model.Book;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
@@ -12,8 +11,7 @@ import javax.validation.constraints.PositiveOrZero;
 
 @Data
 @Builder
-@AllArgsConstructor
-public class BookDTO implements Book {
+public final class BookDTO implements Book {
 
     @NotEmpty(message = "Book's ISBN can not be null or empty")
     private String isbn;

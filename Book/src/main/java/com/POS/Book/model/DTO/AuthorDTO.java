@@ -2,15 +2,15 @@ package com.POS.Book.model.DTO;
 
 import com.POS.Book.model.validation.OnCreate;
 import com.POS.Book.model.validation.OnUpdate;
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 
 @Data
 @Builder
-@AllArgsConstructor
-public class AuthorDTO {
+public final class AuthorDTO {
 
     @Null(message = "Author's id must be null", groups = {OnCreate.class})
     @NotNull(message = "Author's id can not be null", groups = {OnUpdate.class})
