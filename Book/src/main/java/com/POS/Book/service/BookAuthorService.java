@@ -29,7 +29,7 @@ public class BookAuthorService {
     public void postAuthorPerBook(String isbn, List<AuthorDTO> authorDTOList) {
         log.info(String.format("%s -> %s(isbn: %s, authorList: %s)", this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName(), isbn, authorDTOList.toString()));
 
-        BookDTO bookDTO = bookService.getBook(isbn);
+        BookDTO bookDTO = (BookDTO) bookService.getEntireBook(isbn);
         Integer index = getLastIndexOfBookAuthor(bookDTO);
 
         for (AuthorDTO authorDTO : authorDTOList) {
