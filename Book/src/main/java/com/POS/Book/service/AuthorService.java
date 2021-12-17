@@ -14,6 +14,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -46,6 +47,16 @@ public class AuthorService {
         createLoggerMessage(Thread.currentThread().getStackTrace()[1].getMethodName());
 
         return AuthorAdapter.toDTO(authorRepository.save(AuthorAdapter.fromDTO(authorDTO)));
+    }
+
+    @Transactional
+    @Validated(OnCreate.class)
+    public void createAuthor(@Valid List<AuthorDTO> authorDTOList) {
+        createLoggerMessage(Thread.currentThread().getStackTrace()[1].getMethodName());
+
+        for (AuthorDTO authorDTO : authorDTOList) {
+            authorRepository.save(AuthorAdapter.fromDTO(authorDTO));
+        }
     }
 
 
