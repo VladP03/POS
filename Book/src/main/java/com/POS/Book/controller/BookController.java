@@ -35,6 +35,7 @@ public class BookController {
     private final BookService bookService;
     private final BookAssembler bookAssembler;
 
+
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK"),
             @ApiResponse(responseCode = "404", description = "NOT_FOUND")
@@ -44,8 +45,8 @@ public class BookController {
     public ResponseEntity<?> getBook(
             @PathVariable(name = "ISBN") String isbn,
             @RequestParam(defaultValue = "false") Boolean verbose) {
-        log.info(String.format("%s -> %s(%s) & verbose = %b", this.getClass().getSimpleName(),
-                Thread.currentThread().getStackTrace()[1].getMethodName(), isbn, verbose));
+
+        createLoggerMessage(Thread.currentThread().getStackTrace()[1].getMethodName());
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(bookAssembler.toModel(BookAdapter.fromDTO((BookDTO) bookService.getBook(isbn, verbose))));
@@ -64,15 +65,14 @@ public class BookController {
             @RequestParam(required = false) String genre,
             @RequestParam(required = false) Integer year) {
 
+        createLoggerMessage(Thread.currentThread().getStackTrace()[1].getMethodName());
+
         BookFilter bookFilter = BookFilter.builder()
                 .page(page)
                 .items_per_page(items_per_page)
                 .genre(genre)
                 .year(year)
                 .build();
-
-        log.info(String.format("%s -> %s(%s)", this.getClass().getSimpleName(),
-                Thread.currentThread().getStackTrace()[1].getMethodName(), bookFilter.toString()));
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(bookAssembler.toCollectionModel(BookAdapter.fromDTOList(bookService.getBooks(bookFilter))));
@@ -87,8 +87,7 @@ public class BookController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> createBook(@Valid @RequestBody BookDTO bookDTO) {
-        log.info(String.format("%s -> %s(%s)", this.getClass().getSimpleName(),
-                Thread.currentThread().getStackTrace()[1].getMethodName(), bookDTO.toString()));
+        createLoggerMessage(Thread.currentThread().getStackTrace()[1].getMethodName());
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(bookAssembler.toModel(BookAdapter.fromDTO(bookService.createBook(bookDTO))));
@@ -106,8 +105,7 @@ public class BookController {
     public ResponseEntity<?> putBook(
             @PathVariable String ISBN,
             @Valid @RequestBody BookWithoutPK bookWithoutPK) {
-        log.info(String.format("%s -> %s(%s)", this.getClass().getSimpleName(),
-                Thread.currentThread().getStackTrace()[1].getMethodName(), bookWithoutPK.toString()));
+        createLoggerMessage(Thread.currentThread().getStackTrace()[1].getMethodName());
 
         Optional<BookDTO> bookDTOOptional = bookService.putBook(ISBN, bookWithoutPK);
 
@@ -126,11 +124,19 @@ public class BookController {
     })
     @DeleteMapping("/{ISBN}")
     public ResponseEntity<?> deleteBook(@PathVariable String ISBN) {
-        log.info(String.format("%s -> %s(%s)", this.getClass().getSimpleName(),
-                Thread.currentThread().getStackTrace()[1].getMethodName(), ISBN));
+        createLoggerMessage(Thread.currentThread().getStackTrace()[1].getMethodName());
 
         bookService.deleteBook(ISBN);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+
+
+    private void createLoggerMessage(String methodName) {
+        final String LOGGER_TEMPLATE = "Controller %s -> calling method %s";
+        final String className = this.getClass().getSimpleName();
+
+        log.info(String.format(LOGGER_TEMPLATE, className, methodName));
     }
 }
