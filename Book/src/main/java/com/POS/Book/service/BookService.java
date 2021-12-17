@@ -5,6 +5,7 @@ import com.POS.Book.model.DTO.BookDTO;
 import com.POS.Book.model.adapter.BookAdapter;
 import com.POS.Book.model.filter.BookFilter;
 import com.POS.Book.model.partially.BookPartially;
+import com.POS.Book.model.withoutPK.BookWithoutPK;
 import com.POS.Book.repository.book.BookRepository;
 import com.POS.Book.service.BookQueryParam.ChainOfResponsability;
 import com.POS.Book.service.exception.book.NotFound.BookNotFoundException;
@@ -51,7 +52,7 @@ public class BookService {
                 .orElseThrow(() -> new IsbnNotFoundException(isbn)));
     }
 
-    public BookDTO createBook(@Valid BookDTO bookDTO) {
+    public BookDTO createBook(BookDTO bookDTO) {
         log.info(String.format("%s -> %s(%s)", this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName(), bookDTO.toString()));
 
         checkTitleForUnicity(bookDTO.getTitle());
@@ -59,18 +60,28 @@ public class BookService {
         return BookAdapter.toDTO(bookRepository.save(BookAdapter.fromDTO(bookDTO)));
     }
 
-    public Optional<BookDTO> putBook(@Valid BookDTO bookDTO) {
-        log.info(String.format("%s -> %s(%s)", this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName(), bookDTO.toString()));
+    public Optional<BookDTO> putBook(String isbn, @Valid BookWithoutPK bookWithoutPK) {
+        log.info(String.format("%s -> %s(%s)", this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName(), bookWithoutPK.toString()));
 
         try {
-            BookDTO bookDTOtoUpdate = getBook(bookDTO.getIsbn());
-            checkTitleForUnicity(bookDTO.getTitle());
-            BeanUtils.copyProperties(bookDTO, bookDTOtoUpdate);
+            BookDTO bookDTOtoUpdate = getBook(isbn);
+            checkTitleForUnicity(bookWithoutPK.getTitle());
+            BeanUtils.copyProperties(bookWithoutPK, bookDTOtoUpdate);
 
             bookRepository.save(BookAdapter.fromDTO(bookDTOtoUpdate));
 
             return Optional.empty();
         } catch (IsbnNotFoundException exception) {
+            BookDTO bookDTO = BookDTO.builder()
+                    .isbn(isbn)
+                    .title(bookWithoutPK.getTitle())
+                    .publisher(bookWithoutPK.getPublisher())
+                    .year(bookWithoutPK.getYear())
+                    .genre(bookWithoutPK.getGenre())
+                    .price(bookWithoutPK.getPrice())
+                    .stock(bookWithoutPK.getStock())
+                    .build();
+
             return Optional.of(createBook(bookDTO));
         }
     }
@@ -87,11 +98,13 @@ public class BookService {
         return bookDTOList;
     }
 
-    public void deleteBook(String ISBN) {
-        BookDTO bookDTOToDelete = getBook(ISBN);
+    public void deleteBook(String isbn) {
+        BookDTO bookDTOToDelete = getBook(isbn);
 
         bookRepository.delete(BookAdapter.fromDTO(bookDTOToDelete));
     }
+
+
 
     private void checkTitleForUnicity(String title) {
         if (titleIsNotUnique(title)) {
