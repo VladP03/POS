@@ -77,8 +77,10 @@ public class BookController {
                 .year(year)
                 .build();
 
+        List<Book> books = bookService.getBooks(bookFilter);
+
         return ResponseEntity.status(HttpStatus.OK)
-                .body(bookAssembler.toCollectionModel(bookService.getBooks(bookFilter)));
+                .body(bookAssembler.toCollectionModel(books));
     }
 
 
@@ -92,8 +94,10 @@ public class BookController {
     public ResponseEntity<EntityModel<Book>> createBook(@Valid @RequestBody BookDTO bookDTO) {
         createLoggerMessage(Thread.currentThread().getStackTrace()[1].getMethodName());
 
+        Book bookCreated = bookService.createBook(bookDTO);
+
         return ResponseEntity.status(HttpStatus.OK)
-                .body(bookAssembler.toModel(bookService.createBook(bookDTO)));
+                .body(bookAssembler.toModel(bookCreated));
     }
 
 
@@ -110,14 +114,14 @@ public class BookController {
             @Valid @RequestBody BookWithoutPK bookWithoutPK) {
         createLoggerMessage(Thread.currentThread().getStackTrace()[1].getMethodName());
 
-        Optional<BookDTO> bookDTOOptional = bookService.putBook(ISBN, bookWithoutPK);
+        Optional<Book> bookOptional = bookService.putBook(ISBN, bookWithoutPK);
 
-        if (bookDTOOptional.isEmpty()) {
+        if (bookOptional.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(bookAssembler.toModel(bookDTOOptional.get()));
+                .body(bookAssembler.toModel(bookOptional.get()));
     }
 
 
