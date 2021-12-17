@@ -4,11 +4,13 @@ import com.POS.Book.model.DTO.AuthorDTO;
 import com.POS.Book.model.adapter.AuthorAdapter;
 import com.POS.Book.model.filter.AuthorFilter;
 import com.POS.Book.model.validation.OnCreate;
+import com.POS.Book.model.withoutPK.AuthorWithoutPk;
 import com.POS.Book.repository.author.AuthorRepository;
 import com.POS.Book.service.AuthorQueryParam.ChainOfResponsability;
 import com.POS.Book.service.exception.author.NotFound.AuthorNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -21,12 +23,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AuthorService {
 
-    private static final String logInfoTemplate = "%s -> %s(%s)";
-    private final BookService bookService;
     private final AuthorRepository authorRepository;
 
+
     public AuthorDTO getAuthor(Long id) {
-        log.info(String.format(logInfoTemplate, this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName(), id));
+        createLoggerMessage(Thread.currentThread().getStackTrace()[1].getMethodName());
 
         return AuthorAdapter.toDTO(authorRepository.findById(id)
                 .orElseThrow(() -> new AuthorNotFoundException(String.format("with id %d", id))));
@@ -34,7 +35,7 @@ public class AuthorService {
 
 
     public List<AuthorDTO> getAuthors(AuthorFilter authorFilter) {
-        log.info(String.format(logInfoTemplate, this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName(), authorFilter.toString()));
+        createLoggerMessage(Thread.currentThread().getStackTrace()[1].getMethodName());
 
         return new ChainOfResponsability().getFirstChain().run(authorFilter, authorRepository);
     }
@@ -42,8 +43,33 @@ public class AuthorService {
 
     @Validated(OnCreate.class)
     public AuthorDTO createAuthor(@Valid AuthorDTO authorDTO) {
-        log.info(String.format(logInfoTemplate, this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName(), authorDTO.toString()));
+        createLoggerMessage(Thread.currentThread().getStackTrace()[1].getMethodName());
 
         return AuthorAdapter.toDTO(authorRepository.save(AuthorAdapter.fromDTO(authorDTO)));
+    }
+
+
+    public void putAuthor(Long id, AuthorWithoutPk authorWithoutPk) {
+        createLoggerMessage(Thread.currentThread().getStackTrace()[1].getMethodName());
+
+        AuthorDTO authorDTO = getAuthorById(id);
+
+        BeanUtils.copyProperties(authorWithoutPk, authorDTO);
+
+        authorRepository.save(AuthorAdapter.fromDTO(authorDTO));
+    }
+
+
+    public AuthorDTO getAuthorById(Long id) {
+        return AuthorAdapter.toDTO(authorRepository.findById(id)
+                .orElseThrow(() -> new AuthorNotFoundException(id.toString())));
+    }
+
+
+    private void createLoggerMessage(String methodName) {
+        final String LOGGER_TEMPLATE = "Service %s -> calling method %s";
+        final String className = this.getClass().getSimpleName();
+
+        log.info(String.format(LOGGER_TEMPLATE, className, methodName));
     }
 }
