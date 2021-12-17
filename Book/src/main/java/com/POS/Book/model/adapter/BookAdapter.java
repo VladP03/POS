@@ -1,6 +1,7 @@
 package com.POS.Book.model.adapter;
 
 import com.POS.Book.model.DTO.BookDTO;
+import com.POS.Book.model.partial.BookPartial;
 import com.POS.Book.repository.book.Book;
 import lombok.experimental.UtilityClass;
 
@@ -34,11 +35,23 @@ public class BookAdapter {
                 .build();
     }
 
+    public com.POS.Book.model.Book toPartial(BookDTO bookDTO) {
+        return BookPartial.builder()
+                .isbn(bookDTO.getIsbn())
+                .title(bookDTO.getTitle())
+                .publisher(bookDTO.getPublisher())
+                .build();
+    }
+
     public List<BookDTO> toDTOList(List<Book> bookList) {
         return bookList.stream().map(BookAdapter::toDTO).collect(Collectors.toList());
     }
 
     public List<Book> fromDTOList(List<BookDTO> bookDTOList) {
         return bookDTOList.stream().map(BookAdapter::fromDTO).collect(Collectors.toList());
+    }
+
+    public List<com.POS.Book.model.Book> toPartialList(List<com.POS.Book.model.Book> bookDTOList) {
+        return bookDTOList.stream().map(book -> BookAdapter.toPartial((BookDTO) book)).collect(Collectors.toList());
     }
 }

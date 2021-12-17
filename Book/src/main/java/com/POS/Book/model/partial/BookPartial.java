@@ -1,4 +1,4 @@
-package com.POS.Book.model.partially;
+package com.POS.Book.model.partial;
 
 import com.POS.Book.model.Book;
 import lombok.Builder;

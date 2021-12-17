@@ -47,7 +47,7 @@ public class BookController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<EntityModel<Book>> getBook(
             @PathVariable(name = "ISBN") String isbn,
-            @RequestParam(defaultValue = "false") Boolean verbose) {
+            @RequestParam(defaultValue = "true") Boolean verbose) {
         createLoggerMessage(Thread.currentThread().getStackTrace()[1].getMethodName());
 
         Book books = bookService.getBook(isbn, verbose);
@@ -67,7 +67,8 @@ public class BookController {
             @RequestParam(defaultValue = "0") Integer page,
             @RequestParam(defaultValue = "5") Integer items_per_page,
             @RequestParam(required = false) String genre,
-            @RequestParam(required = false) Integer year) {
+            @RequestParam(required = false) Integer year,
+            @RequestParam(defaultValue = "true") Boolean verbose) {
         createLoggerMessage(Thread.currentThread().getStackTrace()[1].getMethodName());
 
         BookFilter bookFilter = BookFilter.builder()
@@ -77,7 +78,7 @@ public class BookController {
                 .year(year)
                 .build();
 
-        List<Book> books = bookService.getBooks(bookFilter);
+        List<Book> books = bookService.getBooks(bookFilter, verbose);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(bookAssembler.toCollectionModel(books));
@@ -137,7 +138,6 @@ public class BookController {
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
 
 
     private void createLoggerMessage(String methodName) {

@@ -4,7 +4,6 @@ import com.POS.Book.model.Book;
 import com.POS.Book.model.DTO.BookDTO;
 import com.POS.Book.model.adapter.BookAdapter;
 import com.POS.Book.model.filter.BookFilter;
-import com.POS.Book.model.partially.BookPartial;
 import com.POS.Book.model.withoutPK.BookWithoutPK;
 import com.POS.Book.repository.book.BookRepository;
 import com.POS.Book.service.BookQueryParam.ChainOfResponsability;
@@ -39,10 +38,16 @@ public class BookService {
     }
 
 
-    public List<Book> getBooks(BookFilter bookFilter) {
+    public List<Book> getBooks(BookFilter bookFilter, Boolean verbose) {
         createLoggerMessage(Thread.currentThread().getStackTrace()[1].getMethodName());
 
-        return new ChainOfResponsability().getFirstChain().run(bookFilter, bookRepository);
+        List<Book> books = new ChainOfResponsability().getFirstChain().run(bookFilter, bookRepository);
+
+        if (verbose == true) {
+            return books;
+        }
+
+        return BookAdapter.toPartialList(books);
     }
 
 
@@ -95,11 +100,7 @@ public class BookService {
     public Book getPartialBook(String isbn) {
         BookDTO book = (BookDTO) getEntireBook(isbn);
 
-        return BookPartial.builder()
-                .isbn(book.getIsbn())
-                .publisher(book.getPublisher())
-                .title(book.getTitle())
-                .build();
+        return BookAdapter.toPartial(book);
     }
 
 
@@ -118,6 +119,7 @@ public class BookService {
 
     /**
      * Update an existing book in DB
+     *
      * @param isbn
      * @param bookWithoutPK
      */
@@ -132,6 +134,7 @@ public class BookService {
 
     /**
      * Create a new book in DB
+     *
      * @param isbn
      * @param bookWithoutPK
      */
