@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class BookPartially implements Book {
+public class BookPartially extends Book {
 
     private String isbn;
     private String title;

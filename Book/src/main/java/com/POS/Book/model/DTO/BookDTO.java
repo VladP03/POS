@@ -11,7 +11,7 @@ import javax.validation.constraints.PositiveOrZero;
 
 @Data
 @Builder
-public final class BookDTO implements Book {
+public final class BookDTO extends Book {
 
     @NotEmpty(message = "Book's ISBN can not be null or empty")
     private String isbn;

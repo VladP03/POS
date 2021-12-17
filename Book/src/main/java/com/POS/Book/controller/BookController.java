@@ -1,8 +1,8 @@
 package com.POS.Book.controller;
 
 import com.POS.Book.assembler.BookAssembler;
+import com.POS.Book.model.Book;
 import com.POS.Book.model.DTO.BookDTO;
-import com.POS.Book.model.adapter.BookAdapter;
 import com.POS.Book.model.filter.BookFilter;
 import com.POS.Book.model.withoutPK.BookWithoutPK;
 import com.POS.Book.service.BookService;
@@ -10,6 +10,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Optional;
 
 @Log4j2
@@ -42,14 +45,15 @@ public class BookController {
     })
     @GetMapping(value = "/book/{ISBN}",
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getBook(
+    public ResponseEntity<EntityModel<Book>> getBook(
             @PathVariable(name = "ISBN") String isbn,
             @RequestParam(defaultValue = "false") Boolean verbose) {
-
         createLoggerMessage(Thread.currentThread().getStackTrace()[1].getMethodName());
 
+        Book books = bookService.getBook(isbn, verbose);
+
         return ResponseEntity.status(HttpStatus.OK)
-                .body(bookAssembler.toModel(BookAdapter.fromDTO((BookDTO) bookService.getBook(isbn, verbose))));
+                .body(bookAssembler.toModel(books));
     }
 
 
@@ -59,12 +63,11 @@ public class BookController {
     })
     @GetMapping(value = "/books",
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getBooks(
+    public ResponseEntity<CollectionModel<EntityModel<Book>>> getBooks(
             @RequestParam(defaultValue = "0") Integer page,
             @RequestParam(defaultValue = "5") Integer items_per_page,
             @RequestParam(required = false) String genre,
             @RequestParam(required = false) Integer year) {
-
         createLoggerMessage(Thread.currentThread().getStackTrace()[1].getMethodName());
 
         BookFilter bookFilter = BookFilter.builder()
@@ -75,7 +78,7 @@ public class BookController {
                 .build();
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(bookAssembler.toCollectionModel(BookAdapter.fromDTOList(bookService.getBooks(bookFilter))));
+                .body(bookAssembler.toCollectionModel(bookService.getBooks(bookFilter)));
     }
 
 
@@ -86,11 +89,11 @@ public class BookController {
     @PostMapping(value = "/book",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> createBook(@Valid @RequestBody BookDTO bookDTO) {
+    public ResponseEntity<EntityModel<Book>> createBook(@Valid @RequestBody BookDTO bookDTO) {
         createLoggerMessage(Thread.currentThread().getStackTrace()[1].getMethodName());
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(bookAssembler.toModel(BookAdapter.fromDTO(bookService.createBook(bookDTO))));
+                .body(bookAssembler.toModel(bookService.createBook(bookDTO)));
     }
 
 
@@ -102,7 +105,7 @@ public class BookController {
     @PutMapping(value = "/book/{ISBN}",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> putBook(
+    public ResponseEntity<EntityModel<Book>> putBook(
             @PathVariable String ISBN,
             @Valid @RequestBody BookWithoutPK bookWithoutPK) {
         createLoggerMessage(Thread.currentThread().getStackTrace()[1].getMethodName());
@@ -114,7 +117,7 @@ public class BookController {
         }
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(bookAssembler.toModel(BookAdapter.fromDTO(bookDTOOptional.get())));
+                .body(bookAssembler.toModel(bookDTOOptional.get()));
     }
 
 
@@ -123,7 +126,7 @@ public class BookController {
             @ApiResponse(responseCode = "404", description = "NOT_FOUND")
     })
     @DeleteMapping("/{ISBN}")
-    public ResponseEntity<?> deleteBook(@PathVariable String ISBN) {
+    public ResponseEntity<Void> deleteBook(@PathVariable String ISBN) {
         createLoggerMessage(Thread.currentThread().getStackTrace()[1].getMethodName());
 
         bookService.deleteBook(ISBN);

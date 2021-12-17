@@ -1,4 +1,5 @@
 package com.POS.Book.model;
 
-public interface Book {
+public abstract class Book {
+    public abstract String getIsbn();
 }
