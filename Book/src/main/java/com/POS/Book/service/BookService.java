@@ -30,7 +30,7 @@ public class BookService {
     public Book getBook(String isbn, Boolean verbose) {
         createLoggerMessage(Thread.currentThread().getStackTrace()[1].getMethodName());
 
-        if (verbose == true) {
+        if (verbose) {
             return getEntireBook(isbn);
         }
 
@@ -43,7 +43,7 @@ public class BookService {
 
         List<Book> books = new ChainOfResponsability().getFirstChain().run(bookFilter, bookRepository);
 
-        if (verbose == true) {
+        if (verbose) {
             return books;
         }
 
@@ -82,9 +82,9 @@ public class BookService {
 
 
     /**
-     * @param isbn
+     * @param isbn PK of a book
      * @return An entire book founded after isbn
-     * @throws IsbnNotFoundException
+     * @throws IsbnNotFoundException throws isbn not found
      */
     public Book getEntireBook(String isbn) {
         return BookAdapter.toDTO(bookRepository.findByIsbn(isbn)
@@ -93,9 +93,9 @@ public class BookService {
 
 
     /**
-     * @param isbn
+     * @param isbn PK of a book
      * @return A partial book founded after isbn
-     * @throws IsbnNotFoundException
+     * @throws IsbnNotFoundException throws isbn not found
      */
     public Book getPartialBook(String isbn) {
         BookDTO book = (BookDTO) getEntireBook(isbn);
@@ -107,8 +107,8 @@ public class BookService {
     /**
      * Checks in DB if title exists
      *
-     * @param title
-     * @throws TitleUniqueException
+     * @param title title of a book
+     * @throws TitleUniqueException throws title is not unique
      */
     public void checkTitleForUniqueness(String title) {
         if (bookRepository.existsByTitle(title)) {
@@ -120,8 +120,8 @@ public class BookService {
     /**
      * Update an existing book in DB
      *
-     * @param isbn
-     * @param bookWithoutPK
+     * @param isbn PK of a book
+     * @param bookWithoutPK book without PK(isbn)
      */
     private void updateBook(String isbn, BookWithoutPK bookWithoutPK) {
         Book bookToUpdate = getEntireBook(isbn);
@@ -135,8 +135,8 @@ public class BookService {
     /**
      * Create a new book in DB
      *
-     * @param isbn
-     * @param bookWithoutPK
+     * @param isbn PK of a book
+     * @param bookWithoutPK book without PK(isbn)
      */
     private Book createNewBook(String isbn, BookWithoutPK bookWithoutPK) {
         BookDTO book = BookDTO.builder()
