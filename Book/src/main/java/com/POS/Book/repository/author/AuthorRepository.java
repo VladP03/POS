@@ -10,7 +10,10 @@ import java.util.Optional;
 
 @Repository
 public interface AuthorRepository extends JpaRepository<Author, Long> {
+
     Optional<Author> findById(Long id);
+
+    Optional<Author> findByFirstNameAndLastName(String firstName, String lastName);
 
     @Query("SELECT author FROM Author author WHERE author.firstName = :name OR author.lastName = :name")
     Author findByNameEquals(@Param("name") String name);

@@ -5,6 +5,7 @@ import com.POS.Book.model.adapter.AuthorAdapter;
 import com.POS.Book.model.filter.AuthorFilter;
 import com.POS.Book.model.validation.OnCreate;
 import com.POS.Book.model.withoutPK.AuthorWithoutPk;
+import com.POS.Book.repository.author.Author;
 import com.POS.Book.repository.author.AuthorRepository;
 import com.POS.Book.service.AuthorQueryParam.ChainOfResponsability;
 import com.POS.Book.service.exception.author.NotFound.AuthorNotFoundException;
@@ -17,6 +18,7 @@ import org.springframework.validation.annotation.Validated;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @Log4j2
 @Service
@@ -74,6 +76,16 @@ public class AuthorService {
     public AuthorDTO getAuthorById(Long id) {
         return AuthorAdapter.toDTO(authorRepository.findById(id)
                 .orElseThrow(() -> new AuthorNotFoundException(id.toString())));
+    }
+
+    public Optional<AuthorDTO> findAuthorByFirstNameAndLastName(String firstName, String lastName) {
+        Optional<Author> authorOptional = authorRepository.findByFirstNameAndLastName(firstName, lastName);
+
+        if (authorOptional.isPresent()) {
+            return Optional.of(AuthorAdapter.toDTO(authorOptional.get()));
+        }
+
+        return Optional.empty();
     }
 
 
