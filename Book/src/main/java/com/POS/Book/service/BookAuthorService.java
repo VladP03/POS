@@ -30,33 +30,21 @@ public class BookAuthorService {
 
     @Transactional
     public BookAuthorDTO postAuthorPerBook(String isbn, List<AuthorDTO> authorDTOList) {
-        log.info(String.format("%s -> %s(isbn: %s, authorList: %s)", this.getClass().getSimpleName(),
-                Thread.currentThread().getStackTrace()[1].getMethodName(), isbn, authorDTOList.toString()));
+        createLoggerMessage(Thread.currentThread().getStackTrace()[1].getMethodName());
 
         BookDTO bookDTO = (BookDTO) bookService.getEntireBook(isbn);
-        Integer index = getLastIndexOfBookAuthor(bookDTO);
+        Integer index = getLastAuthorIndex(bookDTO);
 
-        BookAuthorDTO bookAuthorDTO = new BookAuthorDTO();
-        bookAuthorDTO.setBookIsbn(bookDTO.getIsbn());
+        BookAuthorDTO bookAuthorDTO = BookAuthorDTO.builder()
+                .bookIsbn(bookDTO.getIsbn())
+                .build();
 
         for (AuthorDTO authorDTO : authorDTOList) {
-            /**
-             * TODO
-             * 1) check if author exists in db
-             *      NO -> create author at save
-             *      YES -> check if book already have the author
-             *          YES -> dont do anything
-             *          NO -> get author from DB and just put it
-             */
-
             Optional<AuthorDTO> authorDTOOptional =
                     authorService.findAuthorByFirstNameAndLastName(authorDTO.getFirstName(), authorDTO.getLastName());
 
             if (authorDTOOptional.isPresent()) {
-                if (bookAuthorRepository.existsByBookAndAuthor(BookAdapter.fromDTO(bookDTO),
-                        AuthorAdapter.fromDTO(authorDTOOptional.get()))) {
-
-                } else {
+                if (!isAuthorListedOnBook(bookDTO, authorDTOOptional.get())) {
                     BookAuthor bookAuthor = save(bookDTO, authorDTOOptional.get(), ++index);
 
                     addAuthorIdInList(bookAuthorDTO, bookAuthor.getAuthor().getId());
@@ -95,9 +83,16 @@ public class BookAuthorService {
         );
     }
 
-    private Integer getLastIndexOfBookAuthor(BookDTO bookDTO) {
+
+    private Integer getLastAuthorIndex(BookDTO bookDTO) {
         return bookAuthorRepository.findLastAuthorIndexForBookAuthor(BookAdapter.fromDTO(bookDTO))
                 .orElse(0);
+    }
+
+
+    private boolean isAuthorListedOnBook(BookDTO bookDTO, AuthorDTO authorDTO) {
+        return bookAuthorRepository.existsByBookAndAuthor(BookAdapter.fromDTO(bookDTO),
+                AuthorAdapter.fromDTO(authorDTO));
     }
 
 
@@ -116,5 +111,13 @@ public class BookAuthorService {
         newList.add(authorIndex);
 
         bookAuthorDTO.setAuthorIndexList(newList);
+    }
+
+
+    private void createLoggerMessage(String methodName) {
+        final String LOGGER_TEMPLATE = "Service %s -> calling method %s";
+        final String className = this.getClass().getSimpleName();
+
+        log.info(String.format(LOGGER_TEMPLATE, className, methodName));
     }
 }
