@@ -27,6 +27,10 @@ public class AuthorAssembler implements SimpleRepresentationModelAssembler<Autho
         resource.add(linkTo(methodOn(AuthorController.class).putAuthor(authorId, new AuthorWithoutPk()))
                 .withRel("author collection")
                 .withType("PUT"));
+
+        resource.add(linkTo(methodOn(AuthorController.class).deleteAuthor(authorId))
+                .withRel("author collection")
+                .withType("DELETE"));
     }
 
     @Override

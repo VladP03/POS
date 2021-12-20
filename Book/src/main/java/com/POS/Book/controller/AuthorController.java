@@ -14,6 +14,7 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -89,6 +90,21 @@ public class AuthorController {
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "NO_CONTENT"),
+            @ApiResponse(responseCode = "404", description = "NOT_FOUND")
+    })
+    @DeleteMapping(value = "/author/{ID}")
+    public ResponseEntity<Void> deleteAuthor(@PathVariable(name = "ID") Long id) {
+        createLoggerMessage(Thread.currentThread().getStackTrace()[1].getMethodName());
+
+        authorService.deleteAuthor(id);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
 
     private void createLoggerMessage(String methodName) {
         final String LOGGER_TEMPLATE = "Controller %s -> calling method %s";

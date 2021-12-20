@@ -22,6 +22,7 @@ public class BookAuthorAssembler implements SimpleRepresentationModelAssembler<B
     public void addLinks(EntityModel<BookAuthorDTO> resource) {
         String bookISBN = Objects.requireNonNull(resource.getContent()).getBookIsbn();
 
+        // book
         resource.add(linkTo(methodOn(BookController.class).getBook(bookISBN, true))
                 .withRel("book collection")
                 .withType("GET"));
@@ -38,6 +39,7 @@ public class BookAuthorAssembler implements SimpleRepresentationModelAssembler<B
                 .withRel("book collection")
                 .withType("DELETE"));
 
+        // author
         for(Long authorId : resource.getContent().getAuthorIdList()) {
             resource.add(linkTo(methodOn(AuthorController.class).getAuthor(authorId))
                     .withRel("author collection")
@@ -46,6 +48,10 @@ public class BookAuthorAssembler implements SimpleRepresentationModelAssembler<B
             resource.add(linkTo(methodOn(AuthorController.class).putAuthor(authorId, new AuthorWithoutPk()))
                     .withRel("author collection")
                     .withType("PUT"));
+
+            resource.add(linkTo(methodOn(AuthorController.class).deleteAuthor(authorId))
+                    .withRel("author collection")
+                    .withType("DELETE"));
         }
     }
 

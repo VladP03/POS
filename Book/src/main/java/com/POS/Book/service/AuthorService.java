@@ -51,16 +51,6 @@ public class AuthorService {
         return AuthorAdapter.toDTO(authorRepository.save(AuthorAdapter.fromDTO(authorDTO)));
     }
 
-    @Transactional
-    @Validated(OnCreate.class)
-    public void createAuthor(@Valid List<AuthorDTO> authorDTOList) {
-        createLoggerMessage(Thread.currentThread().getStackTrace()[1].getMethodName());
-
-        for (AuthorDTO authorDTO : authorDTOList) {
-            authorRepository.save(AuthorAdapter.fromDTO(authorDTO));
-        }
-    }
-
 
     public void putAuthor(Long id, AuthorWithoutPk authorWithoutPk) {
         createLoggerMessage(Thread.currentThread().getStackTrace()[1].getMethodName());
@@ -70,6 +60,15 @@ public class AuthorService {
         BeanUtils.copyProperties(authorWithoutPk, authorDTO);
 
         authorRepository.save(AuthorAdapter.fromDTO(authorDTO));
+    }
+
+
+    public void deleteAuthor(Long id) {
+        createLoggerMessage(Thread.currentThread().getStackTrace()[1].getMethodName());
+
+        AuthorDTO authorDTO = getAuthorById(id);
+
+        authorRepository.delete(AuthorAdapter.fromDTO(authorDTO));
     }
 
 
