@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Log4j2
@@ -32,14 +31,12 @@ public class OrderService {
         createLoggerMessage(Thread.currentThread().getStackTrace()[1].getMethodName());
 
         OrderDTO orderDTO = OrderDTO.builder()
-                .date(LocalDate.now())
                 .status(OrderStatus.PENDING)
                 .items(items)
                 .build();
 
         return orderRepository.save(OrderAdapter.fromDTO(orderDTO));
     }
-
 
 
     private void createLoggerMessage(String methodName) {
