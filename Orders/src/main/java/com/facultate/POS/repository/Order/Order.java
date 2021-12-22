@@ -2,6 +2,7 @@ package com.facultate.POS.repository.Order;
 
 import com.facultate.POS.model.Book;
 import com.facultate.POS.model.OrderStatus;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,6 +13,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -27,7 +29,8 @@ public class Order {
     private OrderStatus status;
 
     @NotNull(message = "Order's date can not be null")
-    private LocalDate date;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy - hh:mm:ssa")
+    private LocalDateTime date;
 
     private List<Book> items;
 }
