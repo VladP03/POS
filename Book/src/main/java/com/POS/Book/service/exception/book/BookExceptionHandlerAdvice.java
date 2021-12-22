@@ -2,6 +2,7 @@ package com.POS.Book.service.exception.book;
 
 import com.POS.Book.service.exception.ApiError;
 import com.POS.Book.service.exception.book.NotFound.BookNotFoundException;
+import com.POS.Book.service.exception.book.NotFound.GenreAndYearNotFoundException;
 import com.POS.Book.service.exception.book.NotFound.GenreNotFoundException;
 import com.POS.Book.service.exception.book.NotFound.IsbnNotFoundException;
 import com.POS.Book.service.exception.book.NotFound.YearNotFoundException;
@@ -90,6 +91,23 @@ public class BookExceptionHandlerAdvice {
         String debugMessage = "Try different filters";
 
         log.error("BookNotFoundException has been thrown with the following message: " + errorMessage);
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(ApiError.builder()
+                        .httpStatus(HttpStatus.NOT_FOUND)
+                        .errorMessage(errorMessage)
+                        .debugMessage(debugMessage)
+                        .build()
+                );
+    }
+
+    @ExceptionHandler(GenreAndYearNotFoundException.class)
+    public ResponseEntity<ApiError> handleGenreAndYearNotFoundException(GenreAndYearNotFoundException exception) {
+        String errorMessage = "Could not found any book with following filters: " + exception.getMessage();
+        String debugMessage = "Try different filters";
+
+        log.error("GenreAndYearNotFoundException has been thrown with the following message: " + errorMessage);
 
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)

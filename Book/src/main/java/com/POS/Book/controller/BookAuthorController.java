@@ -1,9 +1,14 @@
 package com.POS.Book.controller;
 
+import com.POS.Book.assembler.BookAuthorAssembler;
 import com.POS.Book.model.DTO.AuthorDTO;
+import com.POS.Book.model.DTO.BookAuthorDTO;
+import com.POS.Book.repository.book_author.BookAuthor;
 import com.POS.Book.service.BookAuthorService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,19 +23,28 @@ import java.util.List;
 public class BookAuthorController {
 
     private final BookAuthorService bookAuthorService;
+    private final BookAuthorAssembler bookAuthorAssembler;
 
 
     @PostMapping(value = "/{ISBN}/authors",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> postAuthorPerBook(
+    public ResponseEntity<EntityModel<BookAuthorDTO>> postAuthorPerBook(
             @PathVariable(name = "ISBN") String isbn,
             @RequestBody List<AuthorDTO> authorDTOList) {
+        createLoggerMessage(Thread.currentThread().getStackTrace()[1].getMethodName());
 
-        log.info(String.format("%s -> %s(%s, %s)", this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName(), isbn, authorDTOList.toString()));
+        BookAuthorDTO bookAuthor = bookAuthorService.postAuthorPerBook(isbn, authorDTOList);
 
-        bookAuthorService.postAuthorPerBook(isbn, authorDTOList);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(bookAuthorAssembler.toModel(bookAuthor));
+    }
 
-        return new ResponseEntity<>(HttpStatus.CREATED);
+
+    private void createLoggerMessage(String methodName) {
+        final String LOGGER_TEMPLATE = "Controller %s -> calling method %s";
+        final String className = this.getClass().getSimpleName();
+
+        log.info(String.format(LOGGER_TEMPLATE, className, methodName));
     }
 }

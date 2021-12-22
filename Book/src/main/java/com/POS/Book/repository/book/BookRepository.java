@@ -9,11 +9,15 @@ import java.util.Optional;
 
 @Repository
 public interface BookRepository extends JpaRepository<Book, String> {
+
     Optional<Book> findByIsbn(String isbn);
+
+    boolean existsByIsbn(String isbn);
 
     boolean existsByTitle(String title);
 
     List<Book> findByGenre(String genre, Pageable pageable);
+
     List<Book> findByYear(Integer year, Pageable pageable);
 
     List<Book> findByGenreAndYear(String genre, Integer year, Pageable pageable);

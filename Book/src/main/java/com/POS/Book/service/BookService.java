@@ -4,10 +4,9 @@ import com.POS.Book.model.Book;
 import com.POS.Book.model.DTO.BookDTO;
 import com.POS.Book.model.adapter.BookAdapter;
 import com.POS.Book.model.filter.BookFilter;
-import com.POS.Book.model.partially.BookPartially;
+import com.POS.Book.model.withoutPK.BookWithoutPK;
 import com.POS.Book.repository.book.BookRepository;
 import com.POS.Book.service.BookQueryParam.ChainOfResponsability;
-import com.POS.Book.service.exception.book.NotFound.BookNotFoundException;
 import com.POS.Book.service.exception.book.NotFound.IsbnNotFoundException;
 import com.POS.Book.service.exception.book.unique.TitleUniqueException;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +15,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,78 +26,142 @@ public class BookService {
 
     private final BookRepository bookRepository;
 
+
     public Book getBook(String isbn, Boolean verbose) {
-        log.info(String.format("%s -> %s(%s) and verbose = %b", this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName(), isbn, verbose));
+        createLoggerMessage(Thread.currentThread().getStackTrace()[1].getMethodName());
 
-        BookDTO bookDTO = getBook(isbn);
-
-        if (verbose != null && verbose == true) {
-            return BookPartially.builder()
-                    .isbn(bookDTO.getIsbn())
-                    .title(bookDTO.getTitle())
-                    .publisher(bookDTO.getPublisher())
-                    .build();
+        if (verbose) {
+            return getEntireBook(isbn);
         }
 
-        return bookDTO;
+        return getPartialBook(isbn);
     }
 
-    public BookDTO getBook(String isbn) {
-        log.info(String.format("%s -> %s(%s)", this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName(), isbn));
 
-        return BookAdapter.toDTO(bookRepository.findByIsbn(isbn)
-                .orElseThrow(() -> new IsbnNotFoundException(isbn)));
+    public List<Book> getBooks(BookFilter bookFilter, Boolean verbose) {
+        createLoggerMessage(Thread.currentThread().getStackTrace()[1].getMethodName());
+
+        List<Book> books = new ChainOfResponsability().getFirstChain().run(bookFilter, bookRepository);
+
+        if (verbose) {
+            return books;
+        }
+
+        return BookAdapter.toPartialList(books);
     }
 
-    public BookDTO createBook(@Valid BookDTO bookDTO) {
-        log.info(String.format("%s -> %s(%s)", this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName(), bookDTO.toString()));
 
-        checkTitleForUnicity(bookDTO.getTitle());
+    public Book createBook(BookDTO bookDTO) {
+        createLoggerMessage(Thread.currentThread().getStackTrace()[1].getMethodName());
+
+        checkTitleForUniqueness(bookDTO.getTitle());
 
         return BookAdapter.toDTO(bookRepository.save(BookAdapter.fromDTO(bookDTO)));
     }
 
-    public Optional<BookDTO> putBook(@Valid BookDTO bookDTO) {
-        log.info(String.format("%s -> %s(%s)", this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName(), bookDTO.toString()));
 
-        try {
-            BookDTO bookDTOtoUpdate = getBook(bookDTO.getIsbn());
-            checkTitleForUnicity(bookDTO.getTitle());
-            BeanUtils.copyProperties(bookDTO, bookDTOtoUpdate);
+    public Optional<Book> putBook(String isbn, BookWithoutPK bookWithoutPK) {
+        createLoggerMessage(Thread.currentThread().getStackTrace()[1].getMethodName());
 
-            bookRepository.save(BookAdapter.fromDTO(bookDTOtoUpdate));
-
+        if (checkIfIsbnExists(isbn)) {
+            updateBook(isbn, bookWithoutPK);
             return Optional.empty();
-        } catch (IsbnNotFoundException exception) {
-            return Optional.of(createBook(bookDTO));
-        }
-    }
-
-    public List<BookDTO> getBooks(BookFilter bookFilter) {
-        log.info(String.format("%s -> %s(%s)", this.getClass().getSimpleName(), Thread.currentThread().getStackTrace()[1].getMethodName(), bookFilter.toString()));
-
-        List<BookDTO> bookDTOList = new ChainOfResponsability().getFirstChain().run(bookFilter, bookRepository);
-
-        if (bookDTOList.isEmpty()) {
-            throw new BookNotFoundException(bookFilter.toString());
         }
 
-        return bookDTOList;
+        return Optional.of(createNewBook(isbn, bookWithoutPK));
     }
 
-    public void deleteBook(String ISBN) {
-        BookDTO bookDTOToDelete = getBook(ISBN);
 
-        bookRepository.delete(BookAdapter.fromDTO(bookDTOToDelete));
+    public void deleteBook(String isbn) {
+        createLoggerMessage(Thread.currentThread().getStackTrace()[1].getMethodName());
+
+        Book bookToDelete = getEntireBook(isbn);
+
+        bookRepository.delete(BookAdapter.fromDTO((BookDTO) bookToDelete));
     }
 
-    private void checkTitleForUnicity(String title) {
-        if (titleIsNotUnique(title)) {
+
+    /**
+     * @param isbn PK of a book
+     * @return An entire book founded after isbn
+     * @throws IsbnNotFoundException throws isbn not found
+     */
+    public Book getEntireBook(String isbn) {
+        return BookAdapter.toDTO(bookRepository.findByIsbn(isbn)
+                .orElseThrow(() -> new IsbnNotFoundException(isbn)));
+    }
+
+
+    /**
+     * @param isbn PK of a book
+     * @return A partial book founded after isbn
+     * @throws IsbnNotFoundException throws isbn not found
+     */
+    public Book getPartialBook(String isbn) {
+        BookDTO book = (BookDTO) getEntireBook(isbn);
+
+        return BookAdapter.toPartial(book);
+    }
+
+
+    /**
+     * Checks in DB if title exists
+     *
+     * @param title title of a book
+     * @throws TitleUniqueException throws title is not unique
+     */
+    public void checkTitleForUniqueness(String title) {
+        if (bookRepository.existsByTitle(title)) {
             throw new TitleUniqueException(title);
         }
     }
 
-    private boolean titleIsNotUnique(String title) {
-        return bookRepository.existsByTitle(title);
+
+    /**
+     * Update an existing book in DB
+     *
+     * @param isbn PK of a book
+     * @param bookWithoutPK book without PK(isbn)
+     */
+    private void updateBook(String isbn, BookWithoutPK bookWithoutPK) {
+        Book bookToUpdate = getEntireBook(isbn);
+
+        BeanUtils.copyProperties(bookWithoutPK, bookToUpdate);
+
+        createBook((BookDTO) bookToUpdate);
+    }
+
+
+    /**
+     * Create a new book in DB
+     *
+     * @param isbn PK of a book
+     * @param bookWithoutPK book without PK(isbn)
+     */
+    private Book createNewBook(String isbn, BookWithoutPK bookWithoutPK) {
+        BookDTO book = BookDTO.builder()
+                .isbn(isbn)
+                .title(bookWithoutPK.getTitle())
+                .publisher(bookWithoutPK.getPublisher())
+                .year(bookWithoutPK.getYear())
+                .genre(bookWithoutPK.getGenre())
+                .price(bookWithoutPK.getPrice())
+                .stock(bookWithoutPK.getStock())
+                .build();
+
+        return createBook(book);
+    }
+
+
+    public boolean checkIfIsbnExists(String isbn) {
+        return bookRepository.existsByIsbn(isbn);
+    }
+
+
+    private void createLoggerMessage(String methodName) {
+        final String LOGGER_TEMPLATE = "Service %s -> calling method %s";
+        final String className = this.getClass().getSimpleName();
+
+        log.info(String.format(LOGGER_TEMPLATE, className, methodName));
     }
 }
