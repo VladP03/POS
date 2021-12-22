@@ -29,14 +29,27 @@ public class OrderController {
 
     @GetMapping("/orders")
     public ResponseEntity<?> getAllOrders() {
+        createLoggerMessage(Thread.currentThread().getStackTrace()[1].getMethodName());
+
         return ResponseEntity.ok(orderService.getAllOrders());
     }
 
 
     @PostMapping("/order")
     public ResponseEntity<Order> createOrder(@RequestBody @Valid List<Book> items) {
+        createLoggerMessage(Thread.currentThread().getStackTrace()[1].getMethodName());
+
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(orderService.createOrder(items));
+    }
+
+
+
+    private void createLoggerMessage(String methodName) {
+        final String LOGGER_TEMPLATE = "Controller %s -> calling method %s";
+        final String className = this.getClass().getSimpleName();
+
+        log.info(String.format(LOGGER_TEMPLATE, className, methodName));
     }
 }
