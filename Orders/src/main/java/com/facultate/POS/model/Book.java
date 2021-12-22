@@ -26,5 +26,5 @@ public class Book {
     private Double price;
 
     @Builder.Default
-    private Integer stock = 1;
+    private Integer quantity = 1;
 }
