@@ -47,6 +47,10 @@ public class OrderService {
     }
 
 
+    /**
+     * Custom logger message
+     * @param methodName the method name
+     */
     private void createLoggerMessage(String methodName) {
         final String LOGGER_TEMPLATE = "Service %s -> calling method %s";
         final String className = this.getClass().getSimpleName();

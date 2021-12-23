@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import nonapi.io.github.classgraph.json.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
@@ -29,5 +30,6 @@ public class Order {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy - hh:mm:ssa")
     private LocalDateTime date;
 
+    @Field(name = "books")
     private List<Book> items;
 }
