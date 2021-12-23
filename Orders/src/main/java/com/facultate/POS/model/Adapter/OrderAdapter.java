@@ -4,6 +4,9 @@ import com.facultate.POS.model.DTO.OrderDTO;
 import com.facultate.POS.repository.Order.Order;
 import lombok.experimental.UtilityClass;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @UtilityClass
 public class OrderAdapter {
 
@@ -23,5 +26,9 @@ public class OrderAdapter {
                 .items(order.getItems())
                 .status(order.getStatus())
                 .build();
+    }
+
+    public static List<OrderDTO> toListDTO(List<Order> orderList) {
+        return orderList.stream().map(OrderAdapter::toDTO).collect(Collectors.toList());
     }
 }

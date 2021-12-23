@@ -3,23 +3,20 @@ package com.facultate.POS.repository.Order;
 import com.facultate.POS.model.Book;
 import com.facultate.POS.model.OrderStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Setter;
 import nonapi.io.github.classgraph.json.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
 @Builder
 @AllArgsConstructor
-@Document
+@Document(collection = "#{@orderRepository.getCollectionName()}")
 public class Order {
 
     @Id

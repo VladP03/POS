@@ -1,7 +1,7 @@
 package com.facultate.POS.controller;
 
 import com.facultate.POS.model.Book;
-import com.facultate.POS.repository.Order.Order;
+import com.facultate.POS.model.DTO.OrderDTO;
 import com.facultate.POS.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,23 +28,24 @@ public class OrderController {
     private final OrderService orderService;
 
 
-    @GetMapping("/orders")
-    public ResponseEntity<?> getAllOrders() {
+    @GetMapping("/orders/{ClientID}")
+    public ResponseEntity<List<OrderDTO>> getAllOrdersForClientId(@PathVariable("ClientID") Long clientId) {
         createLoggerMessage(Thread.currentThread().getStackTrace()[1].getMethodName());
 
-        return ResponseEntity.ok(orderService.getAllOrders());
+        return ResponseEntity.ok(orderService.getAllOrdersForClientId(clientId));
     }
 
 
-    @PostMapping("/order")
-    public ResponseEntity<Order> createOrder(@RequestBody @Valid List<Book> items) {
+    @PostMapping("/order/{ClientID}")
+    public ResponseEntity<OrderDTO> createOrder(
+            @PathVariable("ClientID") Long clientId,
+            @RequestBody @Valid List<Book> items) {
         createLoggerMessage(Thread.currentThread().getStackTrace()[1].getMethodName());
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(orderService.createOrder(items));
+                .body(orderService.createOrder(items, clientId));
     }
-
 
 
     private void createLoggerMessage(String methodName) {
