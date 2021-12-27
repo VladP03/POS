@@ -1,5 +1,6 @@
 package com.facultate.POS.service.exception;
 
+import com.facultate.POS.service.exception.NotFound.CollectionNotFoundException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,6 +42,22 @@ public class ExceptionHandlerAdvice {
                 .status(HttpStatus.BAD_REQUEST)
                 .body(ApiError.builder()
                         .httpStatus(HttpStatus.BAD_REQUEST)
+                        .errorMessage(errorMessage)
+                        .debugMessage("")
+                        .build()
+                );
+    }
+
+    @ExceptionHandler(CollectionNotFoundException.class)
+    @ResponseBody
+    public ResponseEntity<ApiError> handleCollectionNotFoundException(CollectionNotFoundException exception) {
+        String errorMessage = "Could not found any collection for clientId: " + exception.getMessage();
+        String debugMessage;
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(ApiError.builder()
+                        .httpStatus(HttpStatus.NOT_FOUND)
                         .errorMessage(errorMessage)
                         .debugMessage("")
                         .build()
