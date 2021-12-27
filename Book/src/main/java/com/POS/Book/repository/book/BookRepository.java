@@ -16,6 +16,8 @@ public interface BookRepository extends JpaRepository<Book, String> {
 
     boolean existsByTitle(String title);
 
+    Book getByTitle(String title);
+
     List<Book> findByGenre(String genre, Pageable pageable);
 
     List<Book> findByYear(Integer year, Pageable pageable);

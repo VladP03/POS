@@ -116,6 +116,10 @@ public class BookService {
         }
     }
 
+    public boolean checkIfTitleExists(String title) {
+        return bookRepository.existsByTitle(title);
+    }
+
 
     /**
      * Update an existing book in DB
@@ -124,11 +128,21 @@ public class BookService {
      * @param bookWithoutPK book without PK(isbn)
      */
     private void updateBook(String isbn, BookWithoutPK bookWithoutPK) {
-        Book bookToUpdate = getEntireBook(isbn);
+        BookDTO bookToUpdate = (BookDTO) getEntireBook(isbn);
 
         BeanUtils.copyProperties(bookWithoutPK, bookToUpdate);
 
-        createBook((BookDTO) bookToUpdate);
+        if (checkIfTitleExists(bookToUpdate.getTitle())) {
+            BookDTO bookDTO = BookAdapter.toDTO(bookRepository.getByTitle(bookToUpdate.getTitle()));
+
+            if (bookDTO.getTitle().equals(bookToUpdate.getTitle())) {
+                bookRepository.save(BookAdapter.fromDTO(bookToUpdate));
+            } else {
+                throw new TitleUniqueException(bookToUpdate.getTitle());
+            }
+        } else {
+            createBook(bookToUpdate);
+        }
     }
 
 

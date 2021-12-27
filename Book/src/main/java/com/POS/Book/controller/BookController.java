@@ -111,11 +111,11 @@ public class BookController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<EntityModel<Book>> putBook(
-            @PathVariable String ISBN,
+            @PathVariable(name = "ISBN") String isbn,
             @Valid @RequestBody BookWithoutPK bookWithoutPK) {
         createLoggerMessage(Thread.currentThread().getStackTrace()[1].getMethodName());
 
-        Optional<Book> bookOptional = bookService.putBook(ISBN, bookWithoutPK);
+        Optional<Book> bookOptional = bookService.putBook(isbn, bookWithoutPK);
 
         if (bookOptional.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
