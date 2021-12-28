@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.util.List;
 
 @Log4j2

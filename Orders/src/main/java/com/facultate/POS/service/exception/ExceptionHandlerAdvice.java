@@ -1,13 +1,16 @@
 package com.facultate.POS.service.exception;
 
 import com.facultate.POS.service.exception.NotFound.CollectionNotFoundException;
+import com.google.gson.Gson;
 import lombok.extern.log4j.Log4j2;
+import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.client.HttpClientErrorException;
 
 import javax.validation.ConstraintViolationException;
 
@@ -44,6 +47,24 @@ public class ExceptionHandlerAdvice {
                         .httpStatus(HttpStatus.BAD_REQUEST)
                         .errorMessage(errorMessage)
                         .debugMessage("")
+                        .build()
+                );
+    }
+
+    @ExceptionHandler(HttpClientErrorException.class)
+    @ResponseBody
+    public ResponseEntity<ApiError> handleHttpClientErrorException(HttpClientErrorException exception) {
+        JSONObject jsonObject = new JSONObject(exception.getResponseBodyAsString());
+
+        String errorMessage = jsonObject.getString("errorMessage");
+        String debugMessage = jsonObject.getString("debugMessage");
+
+        return ResponseEntity
+                .status(exception.getStatusCode())
+                .body(ApiError.builder()
+                        .httpStatus(exception.getStatusCode())
+                        .errorMessage(errorMessage)
+                        .debugMessage(debugMessage)
                         .build()
                 );
     }

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 
 @Data
@@ -26,5 +27,6 @@ public class Book {
     private Double price;
 
     @Builder.Default
+    @Positive(message = "Book's quantity can not be negative")
     private Integer quantity = 1;
 }
