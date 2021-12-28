@@ -11,6 +11,7 @@ public class CalculatorEndpoint {
 
     private static final String NAMESPACE_URI = "http://com.pos.stateless/calculator";
 
+
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "addRequest")
     @ResponsePayload
     public AddResponse add(@RequestPayload AddRequest input) {
@@ -21,20 +22,33 @@ public class CalculatorEndpoint {
         return result;
     }
 
-    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "divideRequest")
+
+    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "decreaseRequest")
     @ResponsePayload
-    public DivideResponse divide(@RequestPayload DivideRequest input) {
-        DivideResponse result = new DivideResponse();
+    public DecreaseResponse decrease(@RequestPayload DecreaseRequest input) {
+        DecreaseResponse result = new DecreaseResponse();
+
+        result.setResult(input.getParam1().subtract(input.getParam2()));
+
+        return result;
+    }
+
+
+    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "divisionRequest")
+    @ResponsePayload
+    public DivisionResponse divide(@RequestPayload DivisionRequest input) {
+        DivisionResponse result = new DivisionResponse();
 
         result.setResult(input.getParam1().divide(input.getParam2()));
 
         return result;
     }
 
-    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "multipleRequest")
+
+    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "multiplicationRequest")
     @ResponsePayload
-    public MultipleResponse divide(@RequestPayload MultipleRequest input) {
-        MultipleResponse result = new MultipleResponse();
+    public MultiplicationResponse divide(@RequestPayload MultiplicationRequest input) {
+        MultiplicationResponse result = new MultiplicationResponse();
 
         result.setResult(input.getParam1().multiply(input.getParam2()));
 

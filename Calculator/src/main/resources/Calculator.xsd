@@ -4,6 +4,7 @@
            xmlns:tns="http://com.pos.stateless/calculator"
            elementFormDefault="qualified">
 
+    <!-- Add -->
     <xs:element name="addRequest">
         <xs:complexType>
             <xs:sequence>
@@ -21,7 +22,9 @@
         </xs:complexType>
     </xs:element>
 
-    <xs:element name="divideRequest">
+
+    <!-- Decrease -->
+    <xs:element name="decreaseRequest">
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="param1" type="xs:decimal"/>
@@ -30,7 +33,7 @@
         </xs:complexType>
     </xs:element>
 
-    <xs:element name="divideResponse">
+    <xs:element name="decreaseResponse">
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="result" type="xs:decimal"/>
@@ -38,7 +41,9 @@
         </xs:complexType>
     </xs:element>
 
-    <xs:element name="multipleRequest">
+
+    <!-- Division -->
+    <xs:element name="divisionRequest">
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="param1" type="xs:decimal"/>
@@ -47,7 +52,26 @@
         </xs:complexType>
     </xs:element>
 
-    <xs:element name="multipleResponse">
+    <xs:element name="divisionResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="result" type="xs:decimal"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+
+    <!-- Multiplication -->
+    <xs:element name="multiplicationRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="param1" type="xs:decimal"/>
+                <xs:element name="param2" type="xs:decimal"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="multiplicationResponse">
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="result" type="xs:decimal"/>
