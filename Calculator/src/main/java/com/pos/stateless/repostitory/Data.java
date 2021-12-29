@@ -1,6 +1,7 @@
 package com.pos.stateless.repostitory;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -8,6 +9,7 @@ import javax.persistence.*;
 @lombok.Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Entity(name = "Data")
 @Table(name = "data")
 public class Data {

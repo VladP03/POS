@@ -22,18 +22,7 @@ public class WebServiceConfig {
         result.setApplicationContext(applicationContext);
         result.setTransformWsdlLocations(true);
 
-        return new ServletRegistrationBean(result, "/sample");
-    }
-
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    @Bean
-    public ServletRegistrationBean messageDispatcherServletData(ApplicationContext applicationContext) {
-        MessageDispatcherServlet result = new MessageDispatcherServlet();
-
-        result.setApplicationContext(applicationContext);
-        result.setTransformWsdlLocations(true);
-
-        return new ServletRegistrationBean(result, "/data");
+        return new ServletRegistrationBean(result, "/sample", "/data");
     }
 
     @Bean(name = "calculator")
@@ -48,6 +37,11 @@ public class WebServiceConfig {
         return result;
     }
 
+    @Bean
+    public XsdSchema calculatorSchema() {
+        return new SimpleXsdSchema(new ClassPathResource("Calculator.xsd"));
+    }
+
     @Bean(name = "data")
     public DefaultWsdl11Definition defaultWsdl11DefinitionData(XsdSchema dataSchema) {
         DefaultWsdl11Definition result = new DefaultWsdl11Definition();
@@ -58,11 +52,6 @@ public class WebServiceConfig {
         result.setSchema((dataSchema));
 
         return result;
-    }
-
-    @Bean
-    public XsdSchema calculatorSchema() {
-        return new SimpleXsdSchema(new ClassPathResource("Calculator.xsd"));
     }
 
     @Bean

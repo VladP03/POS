@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
            targetNamespace="http://com.pos.stateless/data"
-           xmlns:tns="http://com.pos.stateless/data"
            elementFormDefault="qualified">
 
-    <xs:element name="rowAdd">
+    <xs:element name="postEntityRequest">
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="name" type="xs:string"/>
@@ -14,7 +13,7 @@
         </xs:complexType>
     </xs:element>
 
-    <xs:element name="rowResponse">
+    <xs:element name="postEntityResponse">
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="name" type="xs:string"/>
