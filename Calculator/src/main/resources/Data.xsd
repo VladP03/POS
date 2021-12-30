@@ -3,6 +3,7 @@
            targetNamespace="http://com.pos.stateless/data"
            elementFormDefault="qualified">
 
+    <!-- POST -->
     <xs:element name="postEntityRequest">
         <xs:complexType>
             <xs:sequence>
@@ -16,10 +17,78 @@
     <xs:element name="postEntityResponse">
         <xs:complexType>
             <xs:sequence>
+                <xs:element name="ID" type="xs:long"/>
                 <xs:element name="name" type="xs:string"/>
                 <xs:element name="integerValue" type="xs:integer"/>
                 <xs:element name="doubleValue" type="xs:double"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
+
+
+    <!-- PUT -->
+    <xs:element name="putEntityRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="ID" type="xs:long"/>
+                <xs:element name="name" type="xs:string"/>
+                <xs:element name="integerValue" type="xs:integer"/>
+                <xs:element name="doubleValue" type="xs:double"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="putEntityResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="ID" type="xs:long"/>
+                <xs:element name="name" type="xs:string"/>
+                <xs:element name="integerValue" type="xs:integer"/>
+                <xs:element name="doubleValue" type="xs:double"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+
+    <!-- GET -->
+    <xs:element name="getEntityRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="ID" type="xs:long"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="getEntityResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="ID" type="xs:long"/>
+                <xs:element name="name" type="xs:string"/>
+                <xs:element name="integerValue" type="xs:integer"/>
+                <xs:element name="doubleValue" type="xs:double"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+
+    <!-- DELETE -->
+    <xs:element name="deleteEntityRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="ID" type="xs:long"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="deleteEntityResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="ID" type="xs:long"/>
+                <xs:element name="name" type="xs:string"/>
+                <xs:element name="integerValue" type="xs:integer"/>
+                <xs:element name="doubleValue" type="xs:double"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
 </xs:schema>
