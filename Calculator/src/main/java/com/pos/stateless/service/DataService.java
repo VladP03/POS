@@ -2,6 +2,7 @@ package com.pos.stateless.service;
 
 import com.pos.stateless.repostitory.Data;
 import com.pos.stateless.repostitory.DataRepository;
+import com.pos.stateless.service.exceptions.DataNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import stateless.pos.com.data.DeleteEntityRequest;
@@ -75,7 +76,7 @@ public class DataService {
             return result;
         }
 
-        throw new RuntimeException("id not found");
+        throw new DataNotFoundException(String.format("id %x not found", input.getID()));
     }
 
 
@@ -91,7 +92,7 @@ public class DataService {
 
             return deleteEntityResponse;
         } else {
-            throw new RuntimeException("id not found");
+            throw new DataNotFoundException(String.format("id %x not found", input.getID()));
         }
     }
 }
