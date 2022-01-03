@@ -1,13 +1,13 @@
-package com.pos.stateless;
+package com.pos.JWT;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class CalculatorApplication {
+public class JWTApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(CalculatorApplication.class, args);
+		SpringApplication.run(JWTApplication.class, args);
 	}
 
 }
