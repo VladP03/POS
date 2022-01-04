@@ -3,11 +3,11 @@ version: '3.7'
 services:
   mysqldb:
     image: mysql:8.0.27
-    container_name: POS_MySQL_BookAuthors
+    container_name: POS_MySQL_Authentication
     restart: always
     environment:
-      MYSQL_ROOT_USER: ${ROOT_USER}
-      MYSQL_ROOT_PASSWORD: ${ROOT_PASSWORD}
+      MYSQL_ROOT_USER: root
+      MYSQL_ROOT_PASSWORD: root
     ports:
       - 3306:3306
 
