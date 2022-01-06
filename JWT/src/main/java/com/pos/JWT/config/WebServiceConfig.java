@@ -24,16 +24,18 @@ public class WebServiceConfig extends WsConfigurerAdapter {
         result.setApplicationContext(applicationContext);
         result.setTransformWsdlLocations(true);
 
-        return new ServletRegistrationBean(result, "/sample/*", "/helloWorld");
+        return new ServletRegistrationBean(result, "/login", "/register", "/validateToken");
     }
 
-    @Bean(name = "authentication")
-    public DefaultWsdl11Definition defaultWsdl11Definition(XsdSchema loginSchema) {
+
+    // LOGIN
+    @Bean(name = "login")
+    public DefaultWsdl11Definition defaultWsdl11DefinitionLogin(XsdSchema loginSchema) {
         DefaultWsdl11Definition result = new DefaultWsdl11Definition();
 
         result.setPortTypeName("LoginPort");
-        result.setLocationUri("/sample");
-        result.setTargetNamespace("http://com.pos.JWT/authentication");
+        result.setLocationUri("/login");
+        result.setTargetNamespace("http://com.pos.JWT/login");
         result.setSchema(loginSchema);
 
         return result;
@@ -41,6 +43,44 @@ public class WebServiceConfig extends WsConfigurerAdapter {
 
     @Bean
     public XsdSchema loginSchema() {
-        return new SimpleXsdSchema(new ClassPathResource("Authentication.xsd"));
+        return new SimpleXsdSchema(new ClassPathResource("Login.xsd"));
+    }
+
+
+    // REGISTER
+    @Bean(name = "register")
+    public DefaultWsdl11Definition defaultWsdl11DefinitionRegister(XsdSchema registerSchema) {
+        DefaultWsdl11Definition result = new DefaultWsdl11Definition();
+
+        result.setPortTypeName("RegisterPort");
+        result.setLocationUri("/register");
+        result.setTargetNamespace("http://com.pos.JWT/register");
+        result.setSchema(registerSchema);
+
+        return result;
+    }
+
+    @Bean
+    public XsdSchema registerSchema() {
+        return new SimpleXsdSchema(new ClassPathResource("Register.xsd"));
+    }
+
+
+    // REGISTER
+    @Bean(name = "register")
+    public DefaultWsdl11Definition defaultWsdl11DefinitionValidateToken(XsdSchema validateTokenSchema) {
+        DefaultWsdl11Definition result = new DefaultWsdl11Definition();
+
+        result.setPortTypeName("ValidateTokenPort");
+        result.setLocationUri("/validateToken");
+        result.setTargetNamespace("http://com.pos.JWT/validateToken");
+        result.setSchema(validateTokenSchema);
+
+        return result;
+    }
+
+    @Bean
+    public XsdSchema validateTokenSchema() {
+        return new SimpleXsdSchema(new ClassPathResource("ValidateToken.xsd"));
     }
 }
