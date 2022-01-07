@@ -1,6 +1,6 @@
 package com.pos.JWT.controller;
 
-import com.pos.JWT.service.AuthenticationService;
+import com.pos.JWT.service.RegisterService;
 import jwt.pos.com.register.RequestRegister;
 import jwt.pos.com.register.ResponseRegister;
 import lombok.RequiredArgsConstructor;
@@ -15,12 +15,12 @@ public class RegisterController {
 
     private static final String NAMESPACE_URI = "http://com.pos.JWT/register";
 
-    private final AuthenticationService authenticationService;
+    private final RegisterService registerService;
 
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "Request-Register")
     @ResponsePayload
     public ResponseRegister registerUser(@RequestPayload RequestRegister input) {
-        return authenticationService.registerUser(input);
+        return registerService.registerUser(input);
     }
 }

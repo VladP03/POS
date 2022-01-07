@@ -1,11 +1,10 @@
 package com.pos.JWT.service;
 
 import com.pos.JWT.jwt.JwtTokenUtil;
+import com.pos.JWT.model.UserDTO;
 import jwt.pos.com.validatetoken.RequestValidateToken;
 import jwt.pos.com.validatetoken.ResponseValidateToken;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -22,10 +21,9 @@ public class ValidateTokenService {
         final String token = input.getToken();
         final String username = jwtTokenUtil.getUsernameFromToken(token);
 
-        final UserDetails userDetails = userDetailsService
-                .loadUserByUsername(username);
+        final UserDTO userDTO = userDetailsService.loadUserByUsername(username);
 
-        responseValidateToken.setResult(jwtTokenUtil.validateToken(token, userDetails));
+        responseValidateToken.setResult(jwtTokenUtil.validateToken(token, userDTO.getUsername()));
 
         return responseValidateToken;
     }

@@ -1,6 +1,6 @@
 package com.pos.JWT.controller;
 
-import com.pos.JWT.service.AuthenticationService;
+import com.pos.JWT.service.LoginService;
 import jwt.pos.com.login.RequestLogin;
 import jwt.pos.com.login.ResponseLogin;
 import lombok.RequiredArgsConstructor;
@@ -15,12 +15,12 @@ public class LoginController {
 
     private static final String NAMESPACE_URI = "http://com.pos.JWT/login";
 
-    private final AuthenticationService authenticationService;
+    private final LoginService loginService;
 
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "Request-Login")
     @ResponsePayload
     public ResponseLogin loginUser(@RequestPayload RequestLogin input) {
-        return authenticationService.loginUser(input);
+        return loginService.loginUser(input);
     }
 }

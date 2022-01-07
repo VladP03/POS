@@ -1,5 +1,6 @@
 package com.pos.JWT.jwt;
 
+import com.pos.JWT.model.UserDTO;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -11,6 +12,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Function;
 
 @Component
@@ -20,6 +22,11 @@ public class JwtTokenUtil implements Serializable {
 
     @Value("${jwt.secret}")
     private String secret;
+
+    @Value("${server.address}")
+    private String serverAddress;
+    @Value("${server.port}")
+    private String serverPort;
 
     //retrieve username from jwt token
     public String getUsernameFromToken(String token) {
@@ -48,9 +55,11 @@ public class JwtTokenUtil implements Serializable {
     }
 
     //generate token for user
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(UserDTO userDTO) {
         Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, userDetails.getUsername());
+        claims.put("role", userDTO.getRole());
+
+        return createToken(claims, userDTO.getUsername());
     }
 
     //while creating the token -
@@ -61,16 +70,17 @@ public class JwtTokenUtil implements Serializable {
     private String createToken(Map<String, Object> claims, String subject) {
         return Jwts.builder()
                 .setClaims(claims)
+                .setIssuer(String.format("%s:%s", serverAddress, serverPort))
                 .setSubject(subject)
-                .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
+                .setId(UUID.randomUUID().toString())
                 .signWith(SignatureAlgorithm.HS512, secret)
                 .compact();
     }
 
     //validate token
-    public Boolean validateToken(String token, UserDetails userDetails) {
-        final String username = getUsernameFromToken(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+    public Boolean validateToken(String token, String username) {
+        final String usernameFromToken = getUsernameFromToken(token);
+        return (usernameFromToken.equals(username) && !isTokenExpired(token));
     }
 }
