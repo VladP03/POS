@@ -51,6 +51,10 @@ public class TokenService {
         return setResponse();
     }
 
+    public String getUsernameFromToken(String token) {
+        return jwtTokenUtil.getUsernameFromToken(token);
+    }
+
 
     private void checkIfUserFromTokenExists(String username) {
         userDetailsService.loadUserByUsername(username);

@@ -119,6 +119,9 @@
 						<source>
 							${project.basedir}/src/main/resources/Register.xsd
 						</source>
+						<source>
+							${project.basedir}/src/main/resources/User.xsd
+						</source>
 					</sources>
 				</configuration>
 			</plugin>

@@ -24,7 +24,7 @@ public class WebServiceConfig extends WsConfigurerAdapter {
         result.setApplicationContext(applicationContext);
         result.setTransformWsdlLocations(true);
 
-        return new ServletRegistrationBean(result, "/login", "/register", "/Token");
+        return new ServletRegistrationBean(result, "/login", "/register", "/Token", "/User");
     }
 
 
@@ -82,5 +82,24 @@ public class WebServiceConfig extends WsConfigurerAdapter {
     @Bean
     public XsdSchema validateTokenSchema() {
         return new SimpleXsdSchema(new ClassPathResource("Token.xsd"));
+    }
+
+
+    // USER
+    @Bean(name = "user")
+    public DefaultWsdl11Definition defaultWsdl11DefinitionUser(XsdSchema userSchema) {
+        DefaultWsdl11Definition result = new DefaultWsdl11Definition();
+
+        result.setPortTypeName("UserPort");
+        result.setLocationUri("/User");
+        result.setTargetNamespace("http://com.pos.JWT/User");
+        result.setSchema(userSchema);
+
+        return result;
+    }
+
+    @Bean
+    public XsdSchema userSchema() {
+        return new SimpleXsdSchema(new ClassPathResource("User.xsd"));
     }
 }

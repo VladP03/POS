@@ -22,6 +22,22 @@ public class UserDetailsService {
                 .orElseThrow(() -> new RuntimeException("Incorrect username or password")));
     }
 
+    public void changeRole(String username, Role role) {
+        User user = userRepository.getByUsername(username);
+        user.setRole(role);
+        userRepository.save(user);
+    }
+
+    public void changePassword(String username, String password) {
+        User user = userRepository.getByUsername(username);
+        user.setPassword(bCryptPasswordEncoder.encode(password));
+        userRepository.save(user);
+    }
+
+    public void deleteUser(String username) {
+        userRepository.delete(userRepository.getByUsername(username));
+    }
+
 
     public void authenticate(String username, String password) {
         if (!bCryptPasswordEncoder.matches(password, getEncodedPasswordForCertainUsername(username))) {
@@ -39,6 +55,12 @@ public class UserDetailsService {
         );
     }
 
+
+    public void checkIfUserExists(String username) {
+        if (userRepository.findByUsername(username).isEmpty()) {
+            throw new RuntimeException("User does not exists");
+        }
+    }
 
     public void checkIfUsernameExists(String username) {
         if (userRepository.findByUsername(username).isPresent()) {
