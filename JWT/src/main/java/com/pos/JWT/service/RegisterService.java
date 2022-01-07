@@ -2,30 +2,38 @@ package com.pos.JWT.service;
 
 
 import com.pos.JWT.model.UserDTO;
+import com.pos.JWT.repository.Role;
 import jwt.pos.com.register.RequestRegister;
 import jwt.pos.com.register.ResponseRegister;
+import jwt.pos.com.token.RequestValidateToken;
+import jwt.pos.com.token.ResponseValidateToken;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 
 @Service
 @RequiredArgsConstructor
 public class RegisterService {
 
     private final UserDetailsService userDetailsService;
-    private final ValidateTokenService validateTokenService;
+    private final TokenService tokenService;
 
-    public ResponseRegister registerUser(@RequestPayload RequestRegister input) {
 
-        final String username = input.getUsername();
-        final String password = input.getPassword();
+    public ResponseRegister registerUser(String token, RequestRegister input) {
+        ResponseValidateToken responseValidateToken = tokenService.validateToken(token);
 
-        userDetailsService.checkIfUsernameExists(username);
-//        userDetailsService.passwordValidation(password);
+        if (responseValidateToken.getRole().equals(Role.ADMIN.name())) {
+            final String username = input.getUsername();
+            final String password = input.getPassword();
 
-        UserDTO userDtoCreated = userDetailsService.createUser(username, password);
+            userDetailsService.checkIfUsernameExists(username);
+            //        userDetailsService.passwordValidation(password);
 
-        return createResponse(userDtoCreated.getUsername());
+            UserDTO userDtoCreated = userDetailsService.createUser(username, password);
+
+            return createResponse(userDtoCreated.getUsername());
+        } else {
+            throw new RuntimeException("FORBIDDEN");
+        }
     }
 
 

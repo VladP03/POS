@@ -111,10 +111,7 @@
 				<configuration>
 					<sources>
 						<source>
-							${project.basedir}/src/main/resources/User.xsd
-						</source>
-						<source>
-							${project.basedir}/src/main/resources/ValidateToken.xsd
+							${project.basedir}/src/main/resources/Token.xsd
 						</source>
 						<source>
 							${project.basedir}/src/main/resources/Login.xsd

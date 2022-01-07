@@ -1,7 +1,8 @@
 package com.pos.JWT.config;
 
-import com.pos.JWT.jwt.JwtAuthenticationEntryPoint;
 import com.pos.JWT.jwt.JwtRequestFilter;
+import com.pos.JWT.jwt.exception.CustomAccessDeniedHandler;
+import com.pos.JWT.jwt.exception.CustomAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,8 +20,13 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
 
-    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtRequestFilter jwtRequestFilter;
+
+
+    @Bean(name = "bCryptPasswordEncoder")
+    public static BCryptPasswordEncoder bCryptPasswordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
 
     @Override
@@ -29,20 +35,18 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
 
         httpSecurity.authorizeRequests()
                 .antMatchers("/login").permitAll()
-                .antMatchers("/register").hasAuthority("ADMIN")
                 .anyRequest().authenticated();
 
-        httpSecurity.exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint);
+        httpSecurity
+                .exceptionHandling().authenticationEntryPoint(new CustomAuthenticationEntryPoint())
+                .and()
+                .exceptionHandling().accessDeniedHandler(new CustomAccessDeniedHandler());
 
-        httpSecurity.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        httpSecurity
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         // Add a filter to validate the tokens with every request
         httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
-    }
-
-
-    @Bean(name = "bCryptPasswordEncoder")
-    public static BCryptPasswordEncoder bCryptPasswordEncoder() {
-        return new BCryptPasswordEncoder();
     }
 }

@@ -9,18 +9,24 @@ import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 
+import javax.servlet.http.HttpServletRequest;
+
 @Endpoint
 @RequiredArgsConstructor
 public class RegisterController {
 
     private static final String NAMESPACE_URI = "http://com.pos.JWT/register";
+    private static final String TOKEN_HEADER = "Authorization";
 
     private final RegisterService registerService;
+    private final HttpServletRequest httpServletRequest;
 
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "Request-Register")
     @ResponsePayload
     public ResponseRegister registerUser(@RequestPayload RequestRegister input) {
-        return registerService.registerUser(input);
+        final String token = httpServletRequest.getHeader(TOKEN_HEADER).substring(7);
+
+        return registerService.registerUser(token, input);
     }
 }

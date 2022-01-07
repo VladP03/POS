@@ -24,7 +24,7 @@ public class WebServiceConfig extends WsConfigurerAdapter {
         result.setApplicationContext(applicationContext);
         result.setTransformWsdlLocations(true);
 
-        return new ServletRegistrationBean(result, "/login", "/register", "/validateToken");
+        return new ServletRegistrationBean(result, "/login", "/register", "/Token");
     }
 
 
@@ -81,6 +81,6 @@ public class WebServiceConfig extends WsConfigurerAdapter {
 
     @Bean
     public XsdSchema validateTokenSchema() {
-        return new SimpleXsdSchema(new ClassPathResource("ValidateToken.xsd"));
+        return new SimpleXsdSchema(new ClassPathResource("Token.xsd"));
     }
 }
