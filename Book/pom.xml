@@ -51,6 +51,19 @@
 			<artifactId>spring-hateoas</artifactId>
 		</dependency>
 
+		<!-- SOAP CLIENT -->
+		<dependency>
+			<groupId>javax.xml.soap</groupId>
+			<artifactId>javax.xml.soap-api</artifactId>
+			<version>1.4.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.xml.messaging.saaj</groupId>
+			<artifactId>saaj-impl</artifactId>
+			<version>1.4.0</version>
+			<scope>compile</scope>
+		</dependency>
+
 
 
 		<dependency>

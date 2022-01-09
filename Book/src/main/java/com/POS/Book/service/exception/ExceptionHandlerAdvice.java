@@ -1,5 +1,7 @@
 package com.POS.Book.service.exception;
 
+import com.POS.Book.service.exception.token.EmptyTokenException;
+import com.POS.Book.service.exception.token.InvalidTokenException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,6 +42,38 @@ public class ExceptionHandlerAdvice {
                 .status(HttpStatus.BAD_REQUEST)
                 .body(ApiError.builder()
                         .httpStatus(HttpStatus.BAD_REQUEST)
+                        .errorMessage(errorMessage)
+                        .debugMessage("")
+                        .build()
+                );
+    }
+
+    @ExceptionHandler(EmptyTokenException.class)
+    @ResponseBody
+    public ResponseEntity<ApiError> handleEmptyTokenException(EmptyTokenException exception) {
+        String errorMessage = exception.getMessage();
+        String debugMessage;
+
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(ApiError.builder()
+                        .httpStatus(HttpStatus.UNAUTHORIZED)
+                        .errorMessage(errorMessage)
+                        .debugMessage("")
+                        .build()
+                );
+    }
+
+    @ExceptionHandler(InvalidTokenException.class)
+    @ResponseBody
+    public ResponseEntity<ApiError> handleInvalidTokenException(InvalidTokenException exception) {
+        String errorMessage = exception.getMessage();
+        String debugMessage;
+
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(ApiError.builder()
+                        .httpStatus(HttpStatus.UNAUTHORIZED)
                         .errorMessage(errorMessage)
                         .debugMessage("")
                         .build()
