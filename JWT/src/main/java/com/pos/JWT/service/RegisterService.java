@@ -1,11 +1,11 @@
 package com.pos.JWT.service;
 
 
+import com.pos.JWT.jwt.JwtTokenUtil;
 import com.pos.JWT.model.UserDTO;
 import com.pos.JWT.repository.Role;
 import jwt.pos.com.register.RequestRegister;
 import jwt.pos.com.register.ResponseRegister;
-import jwt.pos.com.token.RequestValidateToken;
 import jwt.pos.com.token.ResponseValidateToken;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,22 +16,29 @@ public class RegisterService {
 
     private final UserDetailsService userDetailsService;
     private final TokenService tokenService;
+    private final JwtTokenUtil jwtTokenUtil;
 
 
     public ResponseRegister registerUser(String token, RequestRegister input) {
-        ResponseValidateToken responseValidateToken = tokenService.validateToken(token);
+        ResponseValidateToken responseValidateToken = tokenService.validateToken(token, token);
 
-        if (responseValidateToken.getRole().equals(Role.ADMIN.name())) {
-            final String username = input.getUsername();
-            final String password = input.getPassword();
+        checkHasAdminRole(token);
 
-            userDetailsService.checkIfUsernameExists(username);
-            //        userDetailsService.passwordValidation(password);
+        final String username = input.getUsername();
+        final String password = input.getPassword();
 
-            UserDTO userDtoCreated = userDetailsService.createUser(username, password);
+        userDetailsService.checkIfUsernameExists(username);
+        //        userDetailsService.passwordValidation(password);
 
-            return createResponse(userDtoCreated.getUsername());
-        } else {
+        UserDTO userDtoCreated = userDetailsService.createUser(username, password);
+
+        return createResponse(userDtoCreated.getUsername());
+    }
+
+
+
+    private void checkHasAdminRole(String token) {
+        if (!jwtTokenUtil.getRoleFromToken(token).equals(Role.ADMIN)) {
             throw new RuntimeException("FORBIDDEN");
         }
     }

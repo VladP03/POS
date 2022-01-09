@@ -26,7 +26,20 @@ public class RegisterController {
     @ResponsePayload
     public ResponseRegister registerUser(@RequestPayload RequestRegister input) {
         final String token = httpServletRequest.getHeader(TOKEN_HEADER).substring(7);
+        checkIfTokenIsPresent(token);
 
         return registerService.registerUser(token, input);
+    }
+
+
+
+    private void checkIfTokenIsPresent(String token) {
+        try {
+            if (token.isEmpty()) {
+                throw new RuntimeException("Empty token");
+            }
+        } catch (NullPointerException exception) {
+            throw new RuntimeException("Null token");
+        }
     }
 }

@@ -21,7 +21,7 @@ public class UserService {
     private final UserDetailsService userDetailsService;
 
     public ResponseDeleteUser deleteUser(String token, RequestDeleteUser input) {
-        ResponseValidateToken responseValidateToken = tokenService.validateToken(token);
+        ResponseValidateToken responseValidateToken = tokenService.validateToken(token, token);
 
         if (responseValidateToken.getRole().equals(Role.ADMIN.name())) {
             userDetailsService.checkIfUserExists(input.getUsername());
@@ -35,7 +35,7 @@ public class UserService {
     }
 
     public ResponseChangeRole changeRole(String token, RequestChangeRole input) {
-        ResponseValidateToken responseValidateToken = tokenService.validateToken(token);
+        ResponseValidateToken responseValidateToken = tokenService.validateToken(token, token);
 
         if (responseValidateToken.getRole().equals(Role.ADMIN.name())) {
             userDetailsService.checkIfUserExists(input.getUsername());
@@ -49,7 +49,7 @@ public class UserService {
     }
 
     public ResponseChangePassword changePassword(String token, RequestChangePassword input) {
-        ResponseValidateToken responseValidateToken = tokenService.validateToken(token);
+        ResponseValidateToken responseValidateToken = tokenService.validateToken(token, token);
 
         String username = tokenService.getUsernameFromToken(token);
 

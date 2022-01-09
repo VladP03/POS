@@ -30,6 +30,7 @@ public class UserController {
     @ResponsePayload
     public ResponseDeleteUser deleteUser(@RequestPayload RequestDeleteUser input) {
         final String token = httpServletRequest.getHeader(TOKEN_HEADER).substring(7);
+        checkIfTokenIsPresent(token);
 
         return userService.deleteUser(token, input);
     }
@@ -39,6 +40,7 @@ public class UserController {
     @ResponsePayload
     public ResponseChangeRole changeRole(@RequestPayload RequestChangeRole input) {
         final String token = httpServletRequest.getHeader(TOKEN_HEADER).substring(7);
+        checkIfTokenIsPresent(token);
 
         return userService.changeRole(token, input);
     }
@@ -48,7 +50,20 @@ public class UserController {
     @ResponsePayload
     public ResponseChangePassword changePassword(@RequestPayload RequestChangePassword input) {
         final String token = httpServletRequest.getHeader(TOKEN_HEADER).substring(7);
+        checkIfTokenIsPresent(token);
 
         return userService.changePassword(token, input);
+    }
+
+
+
+    private void checkIfTokenIsPresent(String token) {
+        try {
+            if (token.isEmpty()) {
+                throw new RuntimeException("Empty token");
+            }
+        } catch (NullPointerException exception) {
+            throw new RuntimeException("Null token");
+        }
     }
 }

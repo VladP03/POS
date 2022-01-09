@@ -1,6 +1,7 @@
 package com.pos.JWT.service;
 
 import com.pos.JWT.jwt.JwtTokenUtil;
+import com.pos.JWT.repository.Role;
 import jwt.pos.com.token.RequestDestroyToken;
 import jwt.pos.com.token.RequestValidateToken;
 import jwt.pos.com.token.ResponseDestroyToken;
@@ -20,36 +21,30 @@ public class TokenService {
     private static final List<String> blackList = new ArrayList<>();
 
 
-    public ResponseValidateToken validateToken(String token) {
+    public ResponseValidateToken validateToken(String headerToken, String tokenToCheck) {
+        checkHeaderTokenIsValid(headerToken);
 
-        if (blackList.contains(token)) {
-            throw new RuntimeException("Token invalid");
-        }
+        checkIfTokenIsOnBlacklist(tokenToCheck);
+        checkTokenIsValid(tokenToCheck);
 
-        if (!jwtTokenUtil.isValidToken(token)) {
-            blackList.add(token);
-            throw new RuntimeException("Token invalid");
-        }
-
-        final String username = jwtTokenUtil.getUsernameFromToken(token);
-        final String role = jwtTokenUtil.getRoleFromToken(token);
+        final String username = jwtTokenUtil.getUsernameFromToken(tokenToCheck);
+        final Role role = jwtTokenUtil.getRoleFromToken(tokenToCheck);
 
         checkIfUserFromTokenExists(username);
 
         return setResponse(username, role);
     }
 
-    public ResponseDestroyToken destroyToken(String token) {
+    public ResponseDestroyToken destroyToken(String headerToken, String tokenToDestroy) {
+        checkHeaderTokenIsValid(headerToken);
+        checkHasAdminRole(headerToken);
 
-        if (!jwtTokenUtil.isValidToken(token)) {
-            blackList.add(token);
-            throw new RuntimeException("Token invalid");
-        }
-
-        blackList.add(token);
+        blackList.add(tokenToDestroy);
 
         return setResponse();
     }
+
+
 
     public String getUsernameFromToken(String token) {
         return jwtTokenUtil.getUsernameFromToken(token);
@@ -61,11 +56,37 @@ public class TokenService {
     }
 
 
-    private ResponseValidateToken setResponse(String username, String role) {
+
+    private void checkHeaderTokenIsValid(String headerToken) {
+        if (!jwtTokenUtil.isValidToken(headerToken)) {
+            throw new RuntimeException("Invalid HeaderToken");
+        }
+    }
+
+    private void checkTokenIsValid(String token) {
+        if (!jwtTokenUtil.isValidToken(token)) {
+            throw new RuntimeException("Invalid token");
+        }
+    }
+
+    private void checkHasAdminRole(String token) {
+        if (!jwtTokenUtil.getRoleFromToken(token).equals(Role.ADMIN)) {
+            throw new RuntimeException("FORBIDDEN");
+        }
+    }
+
+    private void checkIfTokenIsOnBlacklist(String token) {
+        if (blackList.contains(token)) {
+            throw new RuntimeException("Token invalid");
+        }
+    }
+
+
+    private ResponseValidateToken setResponse(String username, Role role) {
         ResponseValidateToken responseValidateToken = new ResponseValidateToken();
 
         responseValidateToken.setSub(username);
-        responseValidateToken.setRole(role);
+        responseValidateToken.setRole(role.toString());
 
         return responseValidateToken;
     }
