@@ -77,15 +77,9 @@ public class JwtTokenUtil implements Serializable {
 
     //for retrieving any information from token we will need the secret key
     private Claims extractAllClaims(String token) {
-        try {
-            return Jwts.parser()
+        return Jwts.parser()
                     .setSigningKey(signingKey)
                     .parseClaimsJws(token).getBody();
-        } catch (ExpiredJwtException exception) {
-            throw new RuntimeException("Token expired");
-        } catch (SignatureException exception) {
-            throw new RuntimeException("Token invalid (signatureException)");
-        }
     }
 
     private <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {

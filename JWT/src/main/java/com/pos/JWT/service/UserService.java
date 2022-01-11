@@ -9,6 +9,7 @@ import jwt.pos.com.user.ResponseChangePassword;
 import jwt.pos.com.user.ResponseChangeRole;
 import jwt.pos.com.user.ResponseDeleteUser;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.Locale;
@@ -20,43 +21,28 @@ public class UserService {
     private final TokenService tokenService;
     private final UserDetailsService userDetailsService;
 
-    public ResponseDeleteUser deleteUser(String token, RequestDeleteUser input) {
-        ResponseValidateToken responseValidateToken = tokenService.validateToken(token, token);
+    public ResponseDeleteUser deleteUser(RequestDeleteUser input) {
+        userDetailsService.checkIfUserExists(input.getUsername());
+        userDetailsService.deleteUser(input.getUsername());
 
-        if (responseValidateToken.getRole().equals(Role.ADMIN.name())) {
-            userDetailsService.checkIfUserExists(input.getUsername());
-
-            userDetailsService.deleteUser(input.getUsername());
-
-            return setResponseDeleteUser();
-        } else {
-            throw new RuntimeException("FORBIDDEN");
-        }
+        return setResponseDeleteUser();
     }
 
-    public ResponseChangeRole changeRole(String token, RequestChangeRole input) {
-        ResponseValidateToken responseValidateToken = tokenService.validateToken(token, token);
+    public ResponseChangeRole changeRole(RequestChangeRole input) {
+        userDetailsService.checkIfUserExists(input.getUsername());
+        userDetailsService.changeRole(input.getUsername(), transformStringToRole(input.getNewRole()));
 
-        if (responseValidateToken.getRole().equals(Role.ADMIN.name())) {
-            userDetailsService.checkIfUserExists(input.getUsername());
-
-            userDetailsService.changeRole(input.getUsername(), transformStringToRole(input.getNewRole()));
-
-            return setResponseChangeRole();
-        } else {
-            throw new RuntimeException("FORBIDDEN");
-        }
+        return setResponseChangeRole();
     }
 
-    public ResponseChangePassword changePassword(String token, RequestChangePassword input) {
-        ResponseValidateToken responseValidateToken = tokenService.validateToken(token, token);
-
-        String username = tokenService.getUsernameFromToken(token);
+    public ResponseChangePassword changePassword(RequestChangePassword input) {
+        final String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
         userDetailsService.changePassword(username, input.getNewPassword());
 
         return setResponseChangePassword();
     }
+
 
 
     private Role transformStringToRole(String option) {
@@ -69,6 +55,7 @@ public class UserService {
                 return Role.USER;
         }
     }
+
 
 
     private ResponseDeleteUser setResponseDeleteUser() {

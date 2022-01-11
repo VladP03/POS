@@ -6,7 +6,6 @@ import com.pos.JWT.repository.Role;
 import com.pos.JWT.repository.User.User;
 import com.pos.JWT.repository.User.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -82,11 +81,4 @@ public class UserDetailsService {
     private String getEncodedPasswordForCertainUsername(String username) {
         return userRepository.getByUsername(username).getPassword();
     }
-
-
-    @Bean(name = "bCryptPasswordEncoder")
-    public static BCryptPasswordEncoder bCryptPasswordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
 }

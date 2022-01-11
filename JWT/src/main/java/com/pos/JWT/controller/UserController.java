@@ -8,62 +8,41 @@ import jwt.pos.com.user.ResponseChangePassword;
 import jwt.pos.com.user.ResponseChangeRole;
 import jwt.pos.com.user.ResponseDeleteUser;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 
-import javax.servlet.http.HttpServletRequest;
 
 @Endpoint
 @RequiredArgsConstructor
 public class UserController {
 
     private static final String NAMESPACE_URI = "http://com.pos.JWT/User";
-    private static final String TOKEN_HEADER = "Authorization";
 
     private final UserService userService;
-    private final HttpServletRequest httpServletRequest;
 
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "Request-DeleteUser")
     @ResponsePayload
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseDeleteUser deleteUser(@RequestPayload RequestDeleteUser input) {
-        final String token = httpServletRequest.getHeader(TOKEN_HEADER).substring(7);
-        checkIfTokenIsPresent(token);
-
-        return userService.deleteUser(token, input);
+        return userService.deleteUser(input);
     }
 
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "Request-ChangeRole")
     @ResponsePayload
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseChangeRole changeRole(@RequestPayload RequestChangeRole input) {
-        final String token = httpServletRequest.getHeader(TOKEN_HEADER).substring(7);
-        checkIfTokenIsPresent(token);
-
-        return userService.changeRole(token, input);
+        return userService.changeRole(input);
     }
 
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "Request-ChangePassword")
     @ResponsePayload
     public ResponseChangePassword changePassword(@RequestPayload RequestChangePassword input) {
-        final String token = httpServletRequest.getHeader(TOKEN_HEADER).substring(7);
-        checkIfTokenIsPresent(token);
-
-        return userService.changePassword(token, input);
-    }
-
-
-
-    private void checkIfTokenIsPresent(String token) {
-        try {
-            if (token.isEmpty()) {
-                throw new RuntimeException("Empty token");
-            }
-        } catch (NullPointerException exception) {
-            throw new RuntimeException("Null token");
-        }
+        return userService.changePassword(input);
     }
 }
