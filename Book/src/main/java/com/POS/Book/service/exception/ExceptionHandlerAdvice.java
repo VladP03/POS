@@ -1,7 +1,6 @@
 package com.POS.Book.service.exception;
 
-import com.POS.Book.service.exception.token.EmptyTokenException;
-import com.POS.Book.service.exception.token.InvalidTokenException;
+import com.POS.Book.interceptor.exception.UnauthorizedException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,25 +47,9 @@ public class ExceptionHandlerAdvice {
                 );
     }
 
-    @ExceptionHandler(EmptyTokenException.class)
+    @ExceptionHandler(UnauthorizedException.class)
     @ResponseBody
-    public ResponseEntity<ApiError> handleEmptyTokenException(EmptyTokenException exception) {
-        String errorMessage = exception.getMessage();
-        String debugMessage;
-
-        return ResponseEntity
-                .status(HttpStatus.UNAUTHORIZED)
-                .body(ApiError.builder()
-                        .httpStatus(HttpStatus.UNAUTHORIZED)
-                        .errorMessage(errorMessage)
-                        .debugMessage("")
-                        .build()
-                );
-    }
-
-    @ExceptionHandler(InvalidTokenException.class)
-    @ResponseBody
-    public ResponseEntity<ApiError> handleInvalidTokenException(InvalidTokenException exception) {
+    public ResponseEntity<ApiError> handleUnauthorizedException(UnauthorizedException exception) {
         String errorMessage = exception.getMessage();
         String debugMessage;
 
