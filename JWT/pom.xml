@@ -116,16 +116,16 @@
 				<configuration>
 					<sources>
 						<source>
-							${project.basedir}/src/main/resources/Token.xsd
+							${project.basedir}/src/main/resources/XSDs/Token.xsd
 						</source>
 						<source>
-							${project.basedir}/src/main/resources/Login.xsd
+							${project.basedir}/src/main/resources/XSDs/Login.xsd
 						</source>
 						<source>
-							${project.basedir}/src/main/resources/Register.xsd
+							${project.basedir}/src/main/resources/XSDs/Register.xsd
 						</source>
 						<source>
-							${project.basedir}/src/main/resources/User.xsd
+							${project.basedir}/src/main/resources/XSDs/User.xsd
 						</source>
 					</sources>
 				</configuration>

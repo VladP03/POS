@@ -43,7 +43,7 @@ public class WebServiceConfig extends WsConfigurerAdapter {
 
     @Bean
     public XsdSchema loginSchema() {
-        return new SimpleXsdSchema(new ClassPathResource("Login.xsd"));
+        return new SimpleXsdSchema(new ClassPathResource("XSDs/Login.xsd"));
     }
 
 
@@ -62,7 +62,7 @@ public class WebServiceConfig extends WsConfigurerAdapter {
 
     @Bean
     public XsdSchema registerSchema() {
-        return new SimpleXsdSchema(new ClassPathResource("Register.xsd"));
+        return new SimpleXsdSchema(new ClassPathResource("XSDs/Register.xsd"));
     }
 
 
@@ -81,7 +81,7 @@ public class WebServiceConfig extends WsConfigurerAdapter {
 
     @Bean
     public XsdSchema validateTokenSchema() {
-        return new SimpleXsdSchema(new ClassPathResource("Token.xsd"));
+        return new SimpleXsdSchema(new ClassPathResource("XSDs/Token.xsd"));
     }
 
 
@@ -100,6 +100,6 @@ public class WebServiceConfig extends WsConfigurerAdapter {
 
     @Bean
     public XsdSchema userSchema() {
-        return new SimpleXsdSchema(new ClassPathResource("User.xsd"));
+        return new SimpleXsdSchema(new ClassPathResource("XSDs/User.xsd"));
     }
 }
