@@ -1,20 +1,32 @@
-version: '3.7'
-
 services:
+  app:
+    image: 'jwtapp'
+    container_name: Authentication-app
+    build:
+      context: .
+    ports:
+      - '8090:8080'
+    depends_on:
+      mysqldb:
+        condition: service_healthy
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb:3306/Authentication
+  
   mysqldb:
     image: mysql:8.0.27
-    container_name: POS_MySQL_Authentication
-    restart: always
-    expose:
-      - "3307"
+    container_name: Authentication-db
     environment:
       MYSQL_ROOT_USER: root
       MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: Authentication
     ports:
       - "3307:3306"
-
     cap_add:
       - SYS_NICE  # CAP_SYS_NICE
-
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: "/usr/bin/mysql --user=root --password=root --execute \"SHOW DATABASES;\""
+      interval: 2s
+      timeout: 20s
+      retries: 10
