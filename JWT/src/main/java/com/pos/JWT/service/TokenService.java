@@ -22,8 +22,8 @@ public class TokenService {
         checkTokenIsValid(tokenToCheck);
         checkIfTokenIsOnBlacklist(tokenToCheck);
 
-        final String username = jwtTokenUtil.getUsernameFromToken(tokenToCheck);
-        final Role role = jwtTokenUtil.getRoleFromToken(tokenToCheck);
+        final String username = jwtTokenUtil.getSubject(tokenToCheck);
+        final Role role = jwtTokenUtil.getSubjectRole(tokenToCheck);
 
         checkIfUserFromTokenExists(username);
 
@@ -34,11 +34,6 @@ public class TokenService {
         blackList.add(tokenToDestroy);
 
         return setResponse();
-    }
-
-
-    public String getUsernameFromToken(String token) {
-        return jwtTokenUtil.getUsernameFromToken(token);
     }
 
 

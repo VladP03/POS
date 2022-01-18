@@ -68,6 +68,10 @@ public class UserDetailsService {
         }
     }
 
+    public Role getRole(String username) {
+        return loadUserByUsername(username).getRole();
+    }
+
 
     public void passwordValidation(String password) {
         String pattern = "(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}";

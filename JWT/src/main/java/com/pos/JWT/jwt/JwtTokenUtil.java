@@ -2,123 +2,106 @@ package com.pos.JWT.jwt;
 
 import com.pos.JWT.model.UserDTO;
 import com.pos.JWT.repository.Role;
+import com.pos.JWT.service.UserDetailsService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
 
 @Component
 @RequiredArgsConstructor
 public class JwtTokenUtil implements Serializable {
-    private final Environment environment;
 
-    public static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60;
+    private final UserDetailsService userDetailsService;
 
-    private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS512;
-    @Value("${jwt.secret}")
+    @Value("${JWT_SECRET}")
     private String signingKey;
+    private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS512;
 
-    //while creating the token -
-    //1. Define  claims of the token, like Issuer, Expiration, Subject, and the ID
-    //2. Sign the JWT using the HS512 algorithm and secret key.
-    //3. According to JWS Compact Serialization(https://tools.ietf.org/html/draft-ietf-jose-json-web-signature-41#section-3.1)
-    //   compaction of the JWT to a URL-safe string
-    private String createToken(Map<String, Object> claims, String subject) {
-        String server;
+    @Value("${JWT_TOKEN_VALIDITY_IN_DAYS}")
+    private Long tokenDaysValidity;
 
-        try {
-            server = InetAddress.getLocalHost().getHostAddress() + ":" + environment.getProperty("server.port");
-        } catch (UnknownHostException ignored) {
-            server = "unknown";
-        }
+
+    /**
+     *
+     * @param userDTO The user for which the token will be generated
+     * @return The JWT token
+     */
+    public String generateToken(UserDTO userDTO) {
+        final Date tokenAvailability = new Date(System.currentTimeMillis() + tokenDaysValidity * 1000 * 60 * 60 * 24);
+        final String jti = UUID.randomUUID().toString();
 
         return Jwts.builder()
-                .setClaims(claims)
-                .setIssuer(server)
-                .setSubject(subject)
-                .setId(UUID.randomUUID().toString())
-                .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
+                .setIssuer("localhost:8090")
+                .setSubject(userDTO.getUsername())
+                .claim("role", userDTO.getRole())
+                .setExpiration(tokenAvailability)
+                .setId(jti)
                 .signWith(signatureAlgorithm, signingKey)
                 .compact();
     }
 
 
-    //generate token for user
-    public String generateToken(UserDTO userDTO) {
-        Map<String, Object> claims = new HashMap<>();
-
-        claims.put("role", userDTO.getRole());
-
-        return createToken(claims, userDTO.getUsername());
-    }
-
-
-    //validate token
+    /**
+     *
+     * @param token The JWT token
+     * @return token validity
+     */
     public Boolean isValidToken(String token) {
-        // 1. perioada de valabilitate
-        return !isTokenExpired(token);
+        checkIfTokenExpired(token);
 
-        // 2. semnatura digitala
-        // daca nu ar fi buna semnatura digitala, nu s-ar fi putet extrage perioada de valabilitate
+        // check user exists in db
+        final String username = getClaimFromToken(token, Claims::getSubject);
+        userDetailsService.checkIfUserExists(username);
+
+        return true;
     }
 
 
-    //for retrieving any information from token we will need the secret key
-    private Claims extractAllClaims(String token) {
-        return Jwts.parser()
-                .setSigningKey(signingKey)
-                .parseClaimsJws(token).getBody();
+    /**
+     *
+     * @param token The JWT token
+     * @return The subject's role
+     */
+    public Role getSubjectRole(String token) {
+        final String username = getClaimFromToken(token, Claims::getSubject);
+
+        return userDetailsService.getRole(username);
     }
 
-    private <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
-        final Claims claims = extractAllClaims(token);
 
-        return claimsResolver.apply(claims);
-    }
-
-
-    //retrieve username from jwt token
-    public String getUsernameFromToken(String token) {
+    /**
+     *
+     * @param token The JWT token
+     * @return The subject
+     */
+    public String getSubject(String token) {
         return getClaimFromToken(token, Claims::getSubject);
     }
 
-    //retrieve role from jwt token
-    public Role getRoleFromToken(String token) {
-        String role = extractAllClaims(token).get("role").toString();
 
-        switch (role.toUpperCase(Locale.ROOT)) {
-            case "USER":
-                return Role.USER;
-            case "ADMIN":
-                return Role.ADMIN;
-            default:
-                throw new RuntimeException("PROBLEM AT GETTING USER ROLE");
+    private void checkIfTokenExpired(String token) {
+        final Date expiration = getClaimFromToken(token, Claims::getExpiration);
+
+        if (expiration.before(new Date())) {
+            throw new RuntimeException("Token expired");
         }
     }
 
-    //retrieve expiration date from jwt token
-    public Date getExpirationDateFromToken(String token) {
-        return getClaimFromToken(token, Claims::getExpiration);
-    }
 
+    private <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
+        final Claims claims = Jwts.parser()
+                .setSigningKey(signingKey)
+                .parseClaimsJws(token)
+                .getBody();
 
-    //check if the token has expired
-    private Boolean isTokenExpired(String token) {
-        final Date expiration = getExpirationDateFromToken(token);
-
-        return expiration.before(new Date());
+        return claimsResolver.apply(claims);
     }
 }
