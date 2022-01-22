@@ -3,9 +3,13 @@ package com.pos.JWT.jwt;
 import com.pos.JWT.model.UserDTO;
 import com.pos.JWT.repository.Role;
 import com.pos.JWT.service.UserDetailsService;
+import com.pos.JWT.service.exception.TokenExpiredException;
+import com.pos.JWT.service.exception.TokenInvalidException;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.SignatureException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -20,17 +24,14 @@ import java.util.function.Function;
 public class JwtTokenUtil implements Serializable {
 
     private final UserDetailsService userDetailsService;
-
+    private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS512;
     @Value("${JWT_SECRET}")
     private String signingKey;
-    private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS512;
-
     @Value("${JWT_TOKEN_VALIDITY_IN_DAYS}")
     private Long tokenDaysValidity;
 
 
     /**
-     *
      * @param userDTO The user for which the token will be generated
      * @return The JWT token
      */
@@ -50,23 +51,19 @@ public class JwtTokenUtil implements Serializable {
 
 
     /**
-     *
      * @param token The JWT token
      * @return token validity
      */
-    public Boolean isValidToken(String token) {
+    public void validateToken(String token) {
         checkIfTokenExpired(token);
 
         // check user exists in db
         final String username = getClaimFromToken(token, Claims::getSubject);
         userDetailsService.checkIfUserExists(username);
-
-        return true;
     }
 
 
     /**
-     *
      * @param token The JWT token
      * @return The subject's role
      */
@@ -78,7 +75,6 @@ public class JwtTokenUtil implements Serializable {
 
 
     /**
-     *
      * @param token The JWT token
      * @return The subject
      */
@@ -91,17 +87,23 @@ public class JwtTokenUtil implements Serializable {
         final Date expiration = getClaimFromToken(token, Claims::getExpiration);
 
         if (expiration.before(new Date())) {
-            throw new RuntimeException("Token expired");
+            throw new TokenExpiredException();
         }
     }
 
 
     private <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
-        final Claims claims = Jwts.parser()
-                .setSigningKey(signingKey)
-                .parseClaimsJws(token)
-                .getBody();
+        try {
+            final Claims claims = Jwts.parser()
+                    .setSigningKey(signingKey)
+                    .parseClaimsJws(token)
+                    .getBody();
 
-        return claimsResolver.apply(claims);
+            return claimsResolver.apply(claims);
+        } catch (SignatureException exception) {
+            throw new TokenInvalidException();
+        } catch (ExpiredJwtException exception) {
+            throw new TokenExpiredException();
+        }
     }
 }

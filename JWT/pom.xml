@@ -125,7 +125,13 @@
 							${project.basedir}/src/main/resources/XSDs/Register.xsd
 						</source>
 						<source>
-							${project.basedir}/src/main/resources/XSDs/User.xsd
+							${project.basedir}/src/main/resources/XSDs/User/ChangePassword.xsd
+						</source>
+						<source>
+							${project.basedir}/src/main/resources/XSDs/User/ChangeRole.xsd
+						</source>
+						<source>
+							${project.basedir}/src/main/resources/XSDs/User/Delete.xsd
 						</source>
 					</sources>
 				</configuration>

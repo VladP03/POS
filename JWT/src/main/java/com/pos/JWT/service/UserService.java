@@ -1,13 +1,12 @@
 package com.pos.JWT.service;
 
 import com.pos.JWT.repository.Role;
-import jwt.pos.com.token.ResponseValidateToken;
-import jwt.pos.com.user.RequestChangePassword;
-import jwt.pos.com.user.RequestChangeRole;
-import jwt.pos.com.user.RequestDeleteUser;
-import jwt.pos.com.user.ResponseChangePassword;
-import jwt.pos.com.user.ResponseChangeRole;
-import jwt.pos.com.user.ResponseDeleteUser;
+import jwt.pos.com.changepassword.RequestChangePassword;
+import jwt.pos.com.changepassword.ResponseChangePassword;
+import jwt.pos.com.changerole.RequestChangeRole;
+import jwt.pos.com.changerole.ResponseChangeRole;
+import jwt.pos.com.deleteuser.RequestDeleteUser;
+import jwt.pos.com.deleteuser.ResponseDeleteUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;

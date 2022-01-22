@@ -1,6 +1,8 @@
 package com.pos.JWT.jwt;
 
 import com.pos.JWT.repository.Role;
+import com.pos.JWT.service.exception.TokenExpiredException;
+import com.pos.JWT.service.exception.TokenInvalidException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,21 +24,22 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
     private final JwtTokenUtil jwtTokenUtil;
 
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
 
         // Get authorization header and validate
         final String headerToken = request.getHeader(HttpHeaders.AUTHORIZATION);
-
         if (headerToken == null || !headerToken.startsWith("Bearer ")) {
             chain.doFilter(request, response);
             return;
         }
 
-        // Get jwt token and validate
         final String token = headerToken.substring(7);
-        if (!jwtTokenUtil.isValidToken(token)) {
+        try {
+            jwtTokenUtil.validateToken(token);
+        } catch (TokenInvalidException | TokenExpiredException exception) {
             chain.doFilter(request, response);
             return;
         }

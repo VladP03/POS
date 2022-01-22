@@ -2,6 +2,7 @@ package com.pos.JWT.service;
 
 import com.pos.JWT.jwt.JwtTokenUtil;
 import com.pos.JWT.repository.Role;
+import com.pos.JWT.service.exception.TokenOnBlacklistException;
 import jwt.pos.com.token.ResponseDestroyToken;
 import jwt.pos.com.token.ResponseValidateToken;
 import lombok.RequiredArgsConstructor;
@@ -14,12 +15,14 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TokenService {
 
-    private static final List<String> blackList = new ArrayList<>();
     private final JwtTokenUtil jwtTokenUtil;
     private final UserDetailsService userDetailsService;
 
+    private static final List<String> blackList = new ArrayList<>();
+
+
     public ResponseValidateToken validateToken(String tokenToCheck) {
-        checkTokenIsValid(tokenToCheck);
+        checkTokenValidity(tokenToCheck);
         checkIfTokenIsOnBlacklist(tokenToCheck);
 
         final String username = jwtTokenUtil.getSubject(tokenToCheck);
@@ -37,20 +40,19 @@ public class TokenService {
     }
 
 
+
     private void checkIfUserFromTokenExists(String username) {
         userDetailsService.loadUserByUsername(username);
     }
 
 
-    private void checkTokenIsValid(String token) {
-        if (!jwtTokenUtil.isValidToken(token)) {
-            throw new RuntimeException("Invalid token");
-        }
+    private void checkTokenValidity(String token) {
+        jwtTokenUtil.validateToken(token);
     }
 
     private void checkIfTokenIsOnBlacklist(String token) {
         if (blackList.contains(token)) {
-            throw new RuntimeException("Token invalid");
+            throw new TokenOnBlacklistException();
         }
     }
 

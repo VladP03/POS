@@ -1,5 +1,9 @@
 package com.pos.JWT.config;
 
+import com.pos.JWT.controller.LoginController;
+import com.pos.JWT.controller.RegisterController;
+import com.pos.JWT.controller.TokenController;
+import com.pos.JWT.controller.UserController;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -24,7 +28,8 @@ public class WebServiceConfig extends WsConfigurerAdapter {
         result.setApplicationContext(applicationContext);
         result.setTransformWsdlLocations(true);
 
-        return new ServletRegistrationBean(result, "/login", "/register", "/Token", "/User");
+        return new ServletRegistrationBean(result, "/login", "/register", "/Token", "/DeleteUser", "/ChangePassword",
+                "/ChangeRole");
     }
 
 
@@ -35,7 +40,7 @@ public class WebServiceConfig extends WsConfigurerAdapter {
 
         result.setPortTypeName("LoginPort");
         result.setLocationUri("/login");
-        result.setTargetNamespace("http://com.pos.JWT/login");
+        result.setTargetNamespace(LoginController.NAMESPACE_URI);
         result.setSchema(loginSchema);
 
         return result;
@@ -54,7 +59,7 @@ public class WebServiceConfig extends WsConfigurerAdapter {
 
         result.setPortTypeName("RegisterPort");
         result.setLocationUri("/register");
-        result.setTargetNamespace("http://com.pos.JWT/register");
+        result.setTargetNamespace(RegisterController.NAMESPACE_URI);
         result.setSchema(registerSchema);
 
         return result;
@@ -73,7 +78,7 @@ public class WebServiceConfig extends WsConfigurerAdapter {
 
         result.setPortTypeName("ValidateTokenPort");
         result.setLocationUri("/validateToken");
-        result.setTargetNamespace("http://com.pos.JWT/validateToken");
+        result.setTargetNamespace(TokenController.NAMESPACE_URI);
         result.setSchema(validateTokenSchema);
 
         return result;
@@ -85,21 +90,59 @@ public class WebServiceConfig extends WsConfigurerAdapter {
     }
 
 
-    // USER
-    @Bean(name = "user")
-    public DefaultWsdl11Definition defaultWsdl11DefinitionUser(XsdSchema userSchema) {
+    // DELETE USER
+    @Bean(name = "DeleteUser")
+    public DefaultWsdl11Definition defaultWsdl11DefinitionDeleteUser(XsdSchema deleteUserSchema) {
         DefaultWsdl11Definition result = new DefaultWsdl11Definition();
 
-        result.setPortTypeName("UserPort");
-        result.setLocationUri("/User");
-        result.setTargetNamespace("http://com.pos.JWT/User");
-        result.setSchema(userSchema);
+        result.setPortTypeName("DeleteUserPort");
+        result.setLocationUri("/DeleteUser");
+        result.setTargetNamespace(UserController.DELETE_NAMESPACE_URI);
+        result.setSchema(deleteUserSchema);
 
         return result;
     }
 
     @Bean
-    public XsdSchema userSchema() {
-        return new SimpleXsdSchema(new ClassPathResource("XSDs/User.xsd"));
+    public XsdSchema deleteUserSchema() {
+        return new SimpleXsdSchema(new ClassPathResource("XSDs/User/Delete.xsd"));
+    }
+
+
+    // Change Role
+    @Bean(name = "ChangeRole")
+    public DefaultWsdl11Definition defaultWsdl11DefinitionChangeRole(XsdSchema changeRoleSchema) {
+        DefaultWsdl11Definition result = new DefaultWsdl11Definition();
+
+        result.setPortTypeName("ChangeRolePort");
+        result.setLocationUri("/ChangeRole");
+        result.setTargetNamespace(UserController.ROLE_NAMESPACE_URI);
+        result.setSchema(changeRoleSchema);
+
+        return result;
+    }
+
+    @Bean
+    public XsdSchema changeRoleSchema() {
+        return new SimpleXsdSchema(new ClassPathResource("XSDs/User/ChangeRole.xsd"));
+    }
+
+
+    // Change Password
+    @Bean(name = "ChangePassword")
+    public DefaultWsdl11Definition defaultWsdl11DefinitionChangePassword(XsdSchema changePasswordSchema) {
+        DefaultWsdl11Definition result = new DefaultWsdl11Definition();
+
+        result.setPortTypeName("ChangePasswordPort");
+        result.setLocationUri("/ChangePassword");
+        result.setTargetNamespace(UserController.PASSWORD_NAMESPACE_URI);
+        result.setSchema(changePasswordSchema);
+
+        return result;
+    }
+
+    @Bean
+    public XsdSchema changePasswordSchema() {
+        return new SimpleXsdSchema(new ClassPathResource("XSDs/User/ChangePassword.xsd"));
     }
 }

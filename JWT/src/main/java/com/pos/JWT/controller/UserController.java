@@ -1,15 +1,14 @@
 package com.pos.JWT.controller;
 
 import com.pos.JWT.service.UserService;
-import jwt.pos.com.user.RequestChangePassword;
-import jwt.pos.com.user.RequestChangeRole;
-import jwt.pos.com.user.RequestDeleteUser;
-import jwt.pos.com.user.ResponseChangePassword;
-import jwt.pos.com.user.ResponseChangeRole;
-import jwt.pos.com.user.ResponseDeleteUser;
+import jwt.pos.com.changepassword.RequestChangePassword;
+import jwt.pos.com.changepassword.ResponseChangePassword;
+import jwt.pos.com.changerole.RequestChangeRole;
+import jwt.pos.com.changerole.ResponseChangeRole;
+import jwt.pos.com.deleteuser.RequestDeleteUser;
+import jwt.pos.com.deleteuser.ResponseDeleteUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
@@ -21,14 +20,15 @@ import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 @RequiredArgsConstructor
 public class UserController {
 
-    public static final String NAMESPACE_URI = "http://com.pos.JWT/User";
+    public static final String DELETE_NAMESPACE_URI = "http://com.pos.JWT/DeleteUser";
+    public static final String ROLE_NAMESPACE_URI = "http://com.pos.JWT/ChangeRole";
+    public static final String PASSWORD_NAMESPACE_URI = "http://com.pos.JWT/ChangePassword";
 
     private final UserService userService;
 
 
-    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "Request-DeleteUser")
+    @PayloadRoot(namespace = DELETE_NAMESPACE_URI, localPart = "Request-DeleteUser")
     @ResponsePayload
-    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseDeleteUser deleteUser(@RequestPayload RequestDeleteUser input) {
         createLoggerMessage(Thread.currentThread().getStackTrace()[1].getMethodName());
 
@@ -36,9 +36,8 @@ public class UserController {
     }
 
 
-    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "Request-ChangeRole")
+    @PayloadRoot(namespace = ROLE_NAMESPACE_URI, localPart = "Request-ChangeRole")
     @ResponsePayload
-    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseChangeRole changeRole(@RequestPayload RequestChangeRole input) {
         createLoggerMessage(Thread.currentThread().getStackTrace()[1].getMethodName());
 
@@ -46,7 +45,7 @@ public class UserController {
     }
 
 
-    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "Request-ChangePassword")
+    @PayloadRoot(namespace = PASSWORD_NAMESPACE_URI, localPart = "Request-ChangePassword")
     @ResponsePayload
     public ResponseChangePassword changePassword(@RequestPayload RequestChangePassword input) {
         createLoggerMessage(Thread.currentThread().getStackTrace()[1].getMethodName());

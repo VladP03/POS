@@ -1,10 +1,10 @@
 package com.pos.JWT.config;
 
 import com.pos.JWT.jwt.JwtTokenFilter;
+import com.pos.JWT.repository.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -13,7 +13,6 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -23,7 +22,6 @@ import javax.servlet.http.HttpServletResponse;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(
         securedEnabled = true,
-        jsr250Enabled = true,
         prePostEnabled = true
 )
 @RequiredArgsConstructor
@@ -31,15 +29,15 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
 
     private final JwtTokenFilter jwtTokenFilter;
 
+    @Bean(name = "bCryptPasswordEncoder")
+    public static BCryptPasswordEncoder bCryptPasswordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
     @Override
     @Bean
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
-    }
-
-    @Bean(name = "bCryptPasswordEncoder")
-    public static BCryptPasswordEncoder bCryptPasswordEncoder() {
-        return new BCryptPasswordEncoder();
     }
 
     @Override
@@ -56,30 +54,32 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        // Enable CORS and disable CSRF
+        // Disable CSRF
         http.csrf().disable();
 
         // filter on all authorized url
         http.authorizeRequests()
+                .antMatchers("/DeleteUser").hasAuthority(Role.ADMIN.toString())
+                .antMatchers("/ChangeRole").hasAuthority(Role.ADMIN.toString())
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
 
         // Set session management to stateless
         http.sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and();
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-        // Set unauthorized requests exception handler
+        // Set requests exception handler
         http.exceptionHandling()
-                .authenticationEntryPoint(
-                        (request, response, ex) -> {
-                            response.sendError(
-                                    HttpServletResponse.SC_UNAUTHORIZED,
-                                    ex.getMessage()
-                            );
+                .authenticationEntryPoint((request, response, ex) -> {
+                            response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
                         }
                 )
-                .and();
+                .and()
+                .exceptionHandling()
+                .accessDeniedHandler((request, response, ex) -> {
+                            response.sendError(HttpServletResponse.SC_FORBIDDEN);
+                        }
+                );
     }
 }
