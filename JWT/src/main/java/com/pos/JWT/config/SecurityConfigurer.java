@@ -48,7 +48,7 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) {
         // Overridden to exclude some url's
-        web.ignoring().antMatchers("/login");
+        web.ignoring().antMatchers("/login", "/Token/*");
     }
 
 

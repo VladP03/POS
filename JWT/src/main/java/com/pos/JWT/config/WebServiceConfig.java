@@ -20,21 +20,22 @@ import org.springframework.xml.xsd.XsdSchema;
 @Configuration
 public class WebServiceConfig extends WsConfigurerAdapter {
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
     @Bean
-    public ServletRegistrationBean messageDispatcherServlet(ApplicationContext applicationContext) {
+    public ServletRegistrationBean<MessageDispatcherServlet> messageDispatcherServlet(ApplicationContext applicationContext) {
         MessageDispatcherServlet result = new MessageDispatcherServlet();
 
         result.setApplicationContext(applicationContext);
         result.setTransformWsdlLocations(true);
 
-        return new ServletRegistrationBean(result, "/login", "/register", "/Token", "/DeleteUser", "/ChangePassword",
-                "/ChangeRole");
+        return new ServletRegistrationBean<>(result,
+                "/login/*", "/register/*",
+                "/Token/*",
+                "/DeleteUser/*", "/ChangePassword/*", "/ChangeRole/*");
     }
 
 
     // LOGIN
-    @Bean(name = "login")
+    @Bean(name = "Login")
     public DefaultWsdl11Definition defaultWsdl11DefinitionLogin(XsdSchema loginSchema) {
         DefaultWsdl11Definition result = new DefaultWsdl11Definition();
 
@@ -53,7 +54,7 @@ public class WebServiceConfig extends WsConfigurerAdapter {
 
 
     // REGISTER
-    @Bean(name = "register")
+    @Bean(name = "Register")
     public DefaultWsdl11Definition defaultWsdl11DefinitionRegister(XsdSchema registerSchema) {
         DefaultWsdl11Definition result = new DefaultWsdl11Definition();
 
@@ -71,8 +72,8 @@ public class WebServiceConfig extends WsConfigurerAdapter {
     }
 
 
-    // REGISTER
-    @Bean(name = "register")
+    // Token
+    @Bean(name = "Token")
     public DefaultWsdl11Definition defaultWsdl11DefinitionValidateToken(XsdSchema validateTokenSchema) {
         DefaultWsdl11Definition result = new DefaultWsdl11Definition();
 
