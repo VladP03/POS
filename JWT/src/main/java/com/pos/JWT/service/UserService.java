@@ -1,5 +1,6 @@
 package com.pos.JWT.service;
 
+import com.pos.JWT.jwt.JwtTokenUtil;
 import com.pos.JWT.repository.Role;
 import jwt.pos.com.changepassword.RequestChangePassword;
 import jwt.pos.com.changepassword.ResponseChangePassword;
@@ -8,7 +9,6 @@ import jwt.pos.com.changerole.ResponseChangeRole;
 import jwt.pos.com.deleteuser.RequestDeleteUser;
 import jwt.pos.com.deleteuser.ResponseDeleteUser;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.Locale;
@@ -17,8 +17,8 @@ import java.util.Locale;
 @RequiredArgsConstructor
 public class UserService {
 
-    private final TokenService tokenService;
     private final UserDetailsService userDetailsService;
+    private final JwtTokenUtil jwtTokenUtil;
 
     public ResponseDeleteUser deleteUser(RequestDeleteUser input) {
         userDetailsService.checkIfUserExists(input.getUsername());
@@ -34,8 +34,8 @@ public class UserService {
         return setResponseChangeRole();
     }
 
-    public ResponseChangePassword changePassword(RequestChangePassword input) {
-        final String username = SecurityContextHolder.getContext().getAuthentication().getName();
+    public ResponseChangePassword changePassword(RequestChangePassword input, String username) {
+//        final String username = jwtTokenUtil.getSubject()
 
         userDetailsService.changePassword(username, input.getNewPassword());
 
