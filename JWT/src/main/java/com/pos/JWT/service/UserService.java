@@ -34,8 +34,8 @@ public class UserService {
         return setResponseChangeRole();
     }
 
-    public ResponseChangePassword changePassword(RequestChangePassword input, String username) {
-//        final String username = jwtTokenUtil.getSubject()
+    public ResponseChangePassword changePassword(RequestChangePassword input, String token) {
+        final String username = jwtTokenUtil.getSubject(token);
 
         userDetailsService.changePassword(username, input.getNewPassword());
 

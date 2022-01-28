@@ -2,9 +2,11 @@ package com.pos.JWT.jwt;
 
 import com.pos.JWT.model.UserDTO;
 import com.pos.JWT.repository.Role;
+import com.pos.JWT.service.TokenService;
 import com.pos.JWT.service.UserDetailsService;
 import com.pos.JWT.service.exception.TokenExpiredException;
 import com.pos.JWT.service.exception.TokenInvalidException;
+import com.pos.JWT.service.exception.UnauthorizedException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -56,6 +58,11 @@ public class JwtTokenUtil implements Serializable {
      */
     public void validateToken(String token) {
         checkIfTokenExpired(token);
+
+        // check if token is on blacklist
+        if (TokenService.getBlackList().contains(token)) {
+            throw new UnauthorizedException();
+        }
 
         // check user exists in db
         final String username = getClaimFromToken(token, Claims::getSubject);

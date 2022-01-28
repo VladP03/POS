@@ -5,6 +5,7 @@ import com.pos.JWT.repository.Role;
 import com.pos.JWT.service.exception.TokenOnBlacklistException;
 import jwt.pos.com.token.ResponseDestroyToken;
 import jwt.pos.com.token.ResponseValidateToken;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,7 @@ public class TokenService {
     private final JwtTokenUtil jwtTokenUtil;
     private final UserDetailsService userDetailsService;
 
+    @Getter
     private static final List<String> blackList = new ArrayList<>();
 
 
