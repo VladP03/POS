@@ -126,7 +126,7 @@
 					<generatePackage>com.pos.token</generatePackage>
 					<schemas>
 						<schema>
-							<url>http://localhost:8090/Token/Token.wsdl</url>
+							<url>http://localhost:8090/user/Token.wsdl</url>
 						</schema>
 					</schemas>
 				</configuration>
