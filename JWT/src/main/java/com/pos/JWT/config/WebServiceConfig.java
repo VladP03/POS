@@ -29,7 +29,7 @@ public class WebServiceConfig extends WsConfigurerAdapter {
         result.setTransformWsdlLocations(true);
 
         return new ServletRegistrationBean<>(result,
-                "/user");
+                "/user/*");
     }
 
     @Bean(name = "bCryptPasswordEncoder")
