@@ -1,5 +1,6 @@
 package com.facultate.POS.service.exception;
 
+import com.facultate.POS.interceptor.exception.UnauthorizedException;
 import com.facultate.POS.service.exception.NotFound.CollectionNotFoundException;
 import com.google.gson.Gson;
 import lombok.extern.log4j.Log4j2;
@@ -79,6 +80,22 @@ public class ExceptionHandlerAdvice {
                 .status(HttpStatus.NOT_FOUND)
                 .body(ApiError.builder()
                         .httpStatus(HttpStatus.NOT_FOUND)
+                        .errorMessage(errorMessage)
+                        .debugMessage("")
+                        .build()
+                );
+    }
+
+    @ExceptionHandler(UnauthorizedException.class)
+    @ResponseBody
+    public ResponseEntity<ApiError> handleUnauthorizedException(UnauthorizedException exception) {
+        String errorMessage = exception.getMessage();
+        String debugMessage;
+
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(ApiError.builder()
+                        .httpStatus(HttpStatus.UNAUTHORIZED)
                         .errorMessage(errorMessage)
                         .debugMessage("")
                         .build()

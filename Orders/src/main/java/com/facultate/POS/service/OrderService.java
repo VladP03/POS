@@ -14,7 +14,9 @@ import org.json.JSONObject;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -30,7 +32,7 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final MongoTemplate mongoTemplate;
-    private RestTemplate restTemplate;
+    private final RestTemplate restTemplate = new RestTemplate();
 
 
     public List<OrderDTO> getAllOrdersForClientId(Long clientId) {
@@ -44,42 +46,25 @@ public class OrderService {
 
 
     @Transactional
-    public OrderDTO createOrder(List<Book> items, Long clientId) {
+    public OrderDTO createOrder(List<Book> items, Long clientId, String token) {
         createLoggerMessage(Thread.currentThread().getStackTrace()[1].getMethodName());
 
-        restTemplate = new RestTemplate();
         setCollectionName(clientId.toString());
 
         for (Book book : items) {
-            URI uri = createURI(String.format("http://localhost:8080/api/bookcollection/book/%s", book.getIsbn()));
+            URI bookUri = createURI(String.format("http://localhost:8080/api/bookcollection/book/%s", book.getIsbn()));
+            Object bookFromRequest = getBook(bookUri, token);
 
-            // get data from URI
-            Object object = restTemplate.getForObject(uri, Object.class);
             // serialize data into JSON
-            JSONObject jsonObject = putIntoJSON(object);
+            JSONObject bookJson = putIntoJSON(bookFromRequest);
 
             // check quantity
-            int availableStock = jsonObject.getInt("stock");
+            int availableStock = bookJson.getInt("stock");
 
             if (availableStock >= book.getQuantity()) {
                 // new stock
                 int newStock = availableStock - book.getQuantity();
-
-                JSONObject newJsonObject = new JSONObject();
-
-                newJsonObject.put("title", jsonObject.getString("title"));
-                newJsonObject.put("publisher", jsonObject.getString("publisher"));
-                newJsonObject.put("year", jsonObject.getInt("year"));
-                newJsonObject.put("genre", jsonObject.getString("genre"));
-                newJsonObject.put("price", jsonObject.getDouble("price"));
-                newJsonObject.put("stock", newStock);
-
-                // edit book with new available stock
-                HttpHeaders headers = new HttpHeaders();
-                headers.setContentType(MediaType.APPLICATION_JSON);
-                HttpEntity<String> httpEntity = new HttpEntity<>(newJsonObject.toString(), headers);
-
-                restTemplate.put(uri, httpEntity);
+                changeStockForBook(newStock, bookJson, bookUri, token);
             } else {
                 // not enough stock
                 throw new InsufficientStockException(book.getIsbn());
@@ -93,6 +78,7 @@ public class OrderService {
 
         return OrderAdapter.toDTO(orderRepository.save(OrderAdapter.fromDTO(orderDTO)));
     }
+
 
 
     private void setCollectionName(String clientId) {
@@ -119,9 +105,46 @@ public class OrderService {
         }
     }
 
+    private Object getBook(URI uri, String token) {
+        HttpHeaders headers = new HttpHeaders();
+
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(token.substring(7));
+
+        HttpEntity<String> httpEntity = new HttpEntity<>(headers);
+
+        ResponseEntity<Object> book = restTemplate.exchange(uri, HttpMethod.GET, httpEntity, Object.class);
+
+        return book.getBody();
+    }
+
+
     private JSONObject putIntoJSON(Object object) {
         return new JSONObject(new Gson().toJson(object));
     }
+
+
+    private void changeStockForBook(int newStock, JSONObject bookJson, URI uri, String token) {
+        HttpHeaders headers = new HttpHeaders();
+        JSONObject newBookJson = new JSONObject();
+
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(token.substring(7));
+
+        newBookJson.put("title", bookJson.getString("title"));
+        newBookJson.put("publisher", bookJson.getString("publisher"));
+        newBookJson.put("year", bookJson.getInt("year"));
+        newBookJson.put("genre", bookJson.getString("genre"));
+        newBookJson.put("price", bookJson.getDouble("price"));
+        newBookJson.put("stock", newStock);
+
+        // edit book with new available stock
+        HttpEntity<String> httpEntity = new HttpEntity<>(newBookJson.toString(), headers);
+
+        restTemplate.put(uri, httpEntity);
+    }
+
+
 
     /**
      * Custom logger message

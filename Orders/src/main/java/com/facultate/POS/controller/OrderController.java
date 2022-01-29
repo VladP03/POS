@@ -5,6 +5,7 @@ import com.facultate.POS.model.DTO.OrderDTO;
 import com.facultate.POS.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -15,9 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.util.List;
 
 @Log4j2
@@ -28,6 +28,7 @@ import java.util.List;
 public class OrderController {
 
     private final OrderService orderService;
+    private final HttpServletRequest request;
 
 
     @GetMapping("/orders/{ClientID}")
@@ -46,7 +47,7 @@ public class OrderController {
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(orderService.createOrder(items, clientId));
+                .body(orderService.createOrder(items, clientId, request.getHeader(HttpHeaders.AUTHORIZATION)));
     }
 
 
