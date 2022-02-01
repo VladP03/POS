@@ -5,12 +5,14 @@ services:
     build:
       context: .
     ports:
-      - '8090:8080'
+      - 8090:8090
     depends_on:
       mysqldb:
         condition: service_healthy
     environment:
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb:3306/Authentication
+    networks:
+      - default-network
   
   mysqldb:
     image: mysql:8.0.27
@@ -30,3 +32,11 @@ services:
       interval: 5s
       timeout: 2s
       retries: 20
+    networks:
+      - default-network
+      
+# https://tjtelan.com/blog/how-to-link-multiple-docker-compose-via-network/?fbclid=IwAR0J5fULJ9XHVXBoP_gdegB_z7xRRWLmeUMd3pfPagX-dI-9pVdiPX2lQvk
+networks:
+  default-network:
+    external: true
+    
