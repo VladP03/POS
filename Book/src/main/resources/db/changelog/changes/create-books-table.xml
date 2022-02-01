@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet author="vlad" id="1">
+        <createTable tableName="books">
+            <column name="ISBN" type="VARCHAR(255)">
+                <constraints primaryKey="true"/>
+            </column>
+
+            <column name="title" type="VARCHAR(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+
+            <column name="publisher" type="VARCHAR(255)">
+                <constraints nullable="false" checkConstraint=""/>
+            </column>
+
+            <column name="year" type="int">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="genre" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="price" type="double">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="stock" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

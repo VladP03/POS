@@ -17,7 +17,7 @@ import javax.validation.constraints.NotNull;
 public class Author {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull(message = "Author's first name can not be null")

@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet author="vlad" id="23">
+        <insert tableName="books_authors">
+            <column name="book_isbn" value="ISBN1"/>
+            <column name="author_id" value="2"/>
+            <column name="author_index" value="1"/>
+        </insert>
+    </changeSet>
+
+    <changeSet author="vlad" id="24">
+        <insert tableName="books_authors">
+            <column name="book_isbn" value="ISBN1"/>
+            <column name="author_id" value="5"/>
+            <column name="author_index" value="2"/>
+        </insert>
+    </changeSet>
+
+    <changeSet author="vlad" id="25">
+        <insert tableName="books_authors">
+            <column name="book_isbn" value="ISBN1"/>
+            <column name="author_id" value="1"/>
+            <column name="author_index" value="3"/>
+        </insert>
+    </changeSet>
+
+    <changeSet author="vlad" id="26">
+        <insert tableName="books_authors">
+            <column name="book_isbn" value="ISBN1"/>
+            <column name="author_id" value="10"/>
+            <column name="author_index" value="4"/>
+        </insert>
+    </changeSet>
+
+    <changeSet author="vlad" id="27">
+        <insert tableName="books_authors">
+            <column name="book_isbn" value="ISBN2"/>
+            <column name="author_id" value="8"/>
+            <column name="author_index" value="1"/>
+        </insert>
+    </changeSet>
+
+    <changeSet author="vlad" id="28">
+        <insert tableName="books_authors">
+            <column name="book_isbn" value="ISBN2"/>
+            <column name="author_id" value="9"/>
+            <column name="author_index" value="2"/>
+        </insert>
+    </changeSet>
+
+    <changeSet author="vlad" id="29">
+        <insert tableName="books_authors">
+            <column name="book_isbn" value="ISBN3"/>
+            <column name="author_id" value="3"/>
+            <column name="author_index" value="1"/>
+        </insert>
+    </changeSet>
+
+    <changeSet author="vlad" id="30">
+        <insert tableName="books_authors">
+            <column name="book_isbn" value="ISBN3"/>
+            <column name="author_id" value="2"/>
+            <column name="author_index" value="2"/>
+        </insert>
+    </changeSet>
+
+    <changeSet author="vlad" id="31">
+        <insert tableName="books_authors">
+            <column name="book_isbn" value="ISBN3"/>
+            <column name="author_id" value="7"/>
+            <column name="author_index" value="3"/>
+        </insert>
+    </changeSet>
+
+    <changeSet author="vlad" id="32">
+        <insert tableName="books_authors">
+            <column name="book_isbn" value="ISBN4"/>
+            <column name="author_id" value="6"/>
+            <column name="author_index" value="1"/>
+        </insert>
+    </changeSet>
+
+    <changeSet author="vlad" id="33">
+        <insert tableName="books_authors">
+            <column name="book_isbn" value="ISBN5"/>
+            <column name="author_id" value="4"/>
+            <column name="author_index" value="1"/>
+        </insert>
+    </changeSet>
+
+    <changeSet author="vlad" id="34">
+        <insert tableName="books_authors">
+            <column name="book_isbn" value="ISBN5"/>
+            <column name="author_id" value="8"/>
+            <column name="author_index" value="2"/>
+        </insert>
+    </changeSet>
+
+    <changeSet author="vlad" id="35">
+        <insert tableName="books_authors">
+            <column name="book_isbn" value="ISBN5"/>
+            <column name="author_id" value="10"/>
+            <column name="author_index" value="3"/>
+        </insert>
+    </changeSet>
+
+    <changeSet author="vlad" id="36">
+        <insert tableName="books_authors">
+            <column name="book_isbn" value="ISBN5"/>
+            <column name="author_id" value="1"/>
+            <column name="author_index" value="3"/>
+        </insert>
+    </changeSet>
+
+    <changeSet author="vlad" id="37">
+        <insert tableName="books_authors">
+            <column name="book_isbn" value="ISBN6"/>
+            <column name="author_id" value="10"/>
+            <column name="author_index" value="1"/>
+        </insert>
+    </changeSet>
+
+    <changeSet author="vlad" id="38">
+        <insert tableName="books_authors">
+            <column name="book_isbn" value="ISBN6"/>
+            <column name="author_id" value="3"/>
+            <column name="author_index" value="2"/>
+        </insert>
+    </changeSet>
+
+    <changeSet author="vlad" id="39">
+        <insert tableName="books_authors">
+            <column name="book_isbn" value="ISBN7"/>
+            <column name="author_id" value="6"/>
+            <column name="author_index" value="1"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

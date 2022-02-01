@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet author="vlad" id="13">
+        <insert tableName="authors">
+            <column name="id" value="1"/>
+            <column name="first_name" value="Iulian"/>
+            <column name="last_name" value="Prelipcean"/>
+        </insert>
+    </changeSet>
+
+    <changeSet author="vlad" id="14">
+        <insert tableName="authors">
+            <column name="id" value="2"/>
+            <column name="first_name" value="Razvan"/>
+            <column name="last_name" value="Bejenariu"/>
+        </insert>
+    </changeSet>
+
+    <changeSet author="vlad" id="15">
+        <insert tableName="authors">
+            <column name="id" value="3"/>
+            <column name="first_name" value="Alexandru"/>
+            <column name="last_name" value="Zbereanu"/>
+        </insert>
+    </changeSet>
+
+    <changeSet author="vlad" id="16">
+        <insert tableName="authors">
+            <column name="id" value="4"/>
+            <column name="first_name" value="Vlad"/>
+            <column name="last_name" value="Paraschiv"/>
+        </insert>
+    </changeSet>
+
+    <changeSet author="vlad" id="17">
+        <insert tableName="authors">
+            <column name="id" value="5"/>
+            <column name="first_name" value="Ionut"/>
+            <column name="last_name" value="Baltariu"/>
+        </insert>
+    </changeSet>
+
+    <changeSet author="vlad" id="18">
+        <insert tableName="authors">
+            <column name="id" value="6"/>
+            <column name="first_name" value="Silviu"/>
+            <column name="last_name" value="Butnaru"/>
+        </insert>
+    </changeSet>
+
+    <changeSet author="vlad" id="19">
+        <insert tableName="authors">
+            <column name="id" value="7"/>
+            <column name="first_name" value="Alexandru"/>
+            <column name="last_name" value="Iluca"/>
+        </insert>
+    </changeSet>
+
+    <changeSet author="vlad" id="20">
+        <insert tableName="authors">
+            <column name="id" value="8"/>
+            <column name="first_name" value="Diana"/>
+            <column name="last_name" value="Buliga"/>
+        </insert>
+    </changeSet>
+
+    <changeSet author="vlad" id="21">
+        <insert tableName="authors">
+            <column name="id" value="9"/>
+            <column name="first_name" value="Catalin"/>
+            <column name="last_name" value="Zara"/>
+        </insert>
+    </changeSet>
+
+    <changeSet author="vlad" id="22">
+        <insert tableName="authors">
+            <column name="id" value="10"/>
+            <column name="first_name" value="Mihaela"/>
+            <column name="last_name" value="Paval"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

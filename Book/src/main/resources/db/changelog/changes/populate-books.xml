@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet author="vlad" id="5">
+        <insert tableName="books">
+            <column name="ISBN" value="ISBN1"/>
+            <column name="title" value="Mein Kampf"/>
+            <column name="publisher" value="Dacia literara"/>
+            <column name="year" value="2010"/>
+            <column name="genre" value="Razboi"/>
+            <column name="price" value="20"/>
+            <column name="stock" value="7"/>
+        </insert>
+    </changeSet>
+
+    <changeSet author="vlad" id="6">
+        <insert tableName="books">
+            <column name="ISBN" value="ISBN2"/>
+            <column name="title" value="WW2 - razboiul rece"/>
+            <column name="publisher" value="Carturesti"/>
+            <column name="year" value="2005"/>
+            <column name="genre" value="Razboi"/>
+            <column name="price" value="25.5"/>
+            <column name="stock" value="12"/>
+        </insert>
+    </changeSet>
+
+    <changeSet author="vlad" id="7">
+        <insert tableName="books">
+            <column name="ISBN" value="ISBN3"/>
+            <column name="title" value="Frumoasa din padurea adormita"/>
+            <column name="publisher" value="Carturesti"/>
+            <column name="year" value="2009"/>
+            <column name="genre" value="Copilarie"/>
+            <column name="price" value="15"/>
+            <column name="stock" value="10"/>
+        </insert>
+    </changeSet>
+
+    <changeSet author="vlad" id="8">
+        <insert tableName="books">
+            <column name="ISBN" value="ISBN4"/>
+            <column name="title" value="Alba ca zapada"/>
+            <column name="publisher" value="Carturesti"/>
+            <column name="year" value="1999"/>
+            <column name="genre" value="Copilarie"/>
+            <column name="price" value="9.99"/>
+            <column name="stock" value="5"/>
+        </insert>
+    </changeSet>
+
+    <changeSet author="vlad" id="9">
+        <insert tableName="books">
+            <column name="ISBN" value="ISBN5"/>
+            <column name="title" value="Tata bogat, tata sarac"/>
+            <column name="publisher" value="Carturesti"/>
+            <column name="year" value="1980"/>
+            <column name="genre" value="Educatie financiara"/>
+            <column name="price" value="13"/>
+            <column name="stock" value="8"/>
+        </insert>
+    </changeSet>
+
+    <changeSet author="vlad" id="10">
+        <insert tableName="books">
+            <column name="ISBN" value="ISBN6"/>
+            <column name="title" value="Luceafarul"/>
+            <column name="publisher" value="Dacia literara"/>
+            <column name="year" value="1975"/>
+            <column name="genre" value="Romantic"/>
+            <column name="price" value="10"/>
+            <column name="stock" value="6"/>
+        </insert>
+    </changeSet>
+
+    <changeSet author="vlad" id="11">
+        <insert tableName="books">
+            <column name="ISBN" value="ISBN7"/>
+            <column name="title" value="Floare-albastra"/>
+            <column name="publisher" value="Dacia literara"/>
+            <column name="year" value="1978"/>
+            <column name="genre" value="Romantic"/>
+            <column name="price" value="8"/>
+            <column name="stock" value="2"/>
+        </insert>
+    </changeSet>
+
+    <changeSet author="vlad" id="12">
+        <insert tableName="books">
+            <column name="ISBN" value="ISBN8"/>
+            <column name="title" value="Cum sa devii bogat din tinerete"/>
+            <column name="publisher" value="Carturesti"/>
+            <column name="year" value="2008"/>
+            <column name="genre" value="Educatie financiara"/>
+            <column name="price" value="25"/>
+            <column name="stock" value="1"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

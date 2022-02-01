@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet author="vlad" id="3">
+        <createTable tableName="books_authors">
+            <column name="book_isbn" type="VARCHAR(255)">
+                <constraints references="books(ISBN)" foreignKeyName="book" deleteCascade="true"/>
+            </column>
+
+            <column name="author_id" type="bigint" >
+                <constraints references="authors(id)" foreignKeyName="author" />
+            </column>
+
+            <column name="author_index" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="4" author="vlad">
+        <addPrimaryKey tableName="books_authors" columnNames="book_isbn, author_id"/>
+    </changeSet>
+
+</databaseChangeLog>
