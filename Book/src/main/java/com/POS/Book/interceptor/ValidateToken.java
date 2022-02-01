@@ -1,8 +1,8 @@
 package com.POS.Book.interceptor;
 
 import com.POS.Book.interceptor.exception.UnauthorizedException;
-import com.pos.token.RequestValidateToken;
-import com.pos.token.ResponseValidateToken;
+import com.POS.token.RequestValidateToken;
+import com.POS.token.ResponseValidateToken;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.stereotype.Component;
@@ -42,7 +42,8 @@ public class ValidateToken extends WebServiceGatewaySupport {
         log.info("Request token validation");
         try {
             ResponseValidateToken response = (ResponseValidateToken) webServiceTemplate
-                    .marshalSendAndReceive("http://localhost:8090/user", request, new WebServiceMessageCallback() {
+                    .marshalSendAndReceive("http://Authentication-app:8090/user", request,
+                            new WebServiceMessageCallback() {
                         @Override
                         public void doWithMessage(WebServiceMessage message) throws IOException {
                             TransportContext context = TransportContextHolder.getTransportContext();

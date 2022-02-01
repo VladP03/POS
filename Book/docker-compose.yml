@@ -1,18 +1,42 @@
-version: '3.7'
-
 services:
+  app:
+    image: 'bookapp'
+    container_name: Book-app
+    build:
+      context: .
+    ports:
+      - '8080:8080'
+    depends_on:
+      mysqldb:
+        condition: service_healthy
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb:3306/Books
+    networks:
+      - default-network
+  
   mysqldb:
     image: mysql:8.0.27
     container_name: POS_MySQL_BookAuthors
     restart: always
     environment:
-      MYSQL_ROOT_USER: ${ROOT_USER}
-      MYSQL_ROOT_PASSWORD: ${ROOT_PASSWORD}
+      MYSQL_ROOT_USER: root
+      MYSQL_ROOT_PASSWORD: rootPASSWORD
+      MYSQL_DATABASE: Books
     ports:
-      - 3306:3306
-
+      - "3308:3306"
     cap_add:
       - SYS_NICE  # CAP_SYS_NICE
-
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: "/usr/bin/mysql --user=root --password=rootPASSWORD --execute \"SHOW DATABASES;\""
+      interval: 5s
+      timeout: 2s
+      retries: 20
+    networks:
+      - default-network
+
+# https://tjtelan.com/blog/how-to-link-multiple-docker-compose-via-network/?fbclid=IwAR0J5fULJ9XHVXBoP_gdegB_z7xRRWLmeUMd3pfPagX-dI-9pVdiPX2lQvk
+networks:
+  default-network:
+    external: true
