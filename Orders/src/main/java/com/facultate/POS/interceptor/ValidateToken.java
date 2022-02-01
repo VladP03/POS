@@ -42,7 +42,8 @@ public class ValidateToken extends WebServiceGatewaySupport {
         log.info("Request token validation");
         try {
             ResponseValidateToken response = (ResponseValidateToken) webServiceTemplate
-                    .marshalSendAndReceive("http://localhost:8090/user", request, new WebServiceMessageCallback() {
+                    .marshalSendAndReceive("http://Authentication-app:8090/user", request,
+                            new WebServiceMessageCallback() {
                         @Override
                         public void doWithMessage(WebServiceMessage message) throws IOException {
                             TransportContext context = TransportContextHolder.getTransportContext();

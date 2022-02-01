@@ -101,4 +101,20 @@ public class ExceptionHandlerAdvice {
                         .build()
                 );
     }
+
+    @ExceptionHandler(InsufficientStockException.class)
+    @ResponseBody
+    public ResponseEntity<ApiError> handleInsufficientStockException(InsufficientStockException exception) {
+        String errorMessage = "Insufficient stock on book with isbn: " + exception.getMessage();
+        String debugMessage;
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ApiError.builder()
+                        .httpStatus(HttpStatus.BAD_REQUEST)
+                        .errorMessage(errorMessage)
+                        .debugMessage("")
+                        .build()
+                );
+    }
 }

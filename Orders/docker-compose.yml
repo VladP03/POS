@@ -1,16 +1,43 @@
-version: '3.7'
-
 services:
+  app:
+    image: 'orderapp'
+    container_name: Order-app
+    build:
+      context: .
+    ports:
+      - '8081:8081'
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    environment:
+      - spring.data.mongodb.host=mongodb
+    networks:
+      - default-network
+  
   mongodb:
     image: mongo:4.4
     container_name: POS_MongoDB_Orders
     restart: always
     environment:
-      MONGO_INITDB_DATABASE: orders
-      MONGO_INITDB_ROOT_USERNAME: ${ROOT_USER}
-      MONGO_INITDB_ROOT_PASSWORD: ${ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: Orders
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rootPASSWORD
     ports:
       - 27017:27017
 
     volumes:
       - ./init.js:/docker-entrypoint-initdb.d/init.js:ro
+    
+    healthcheck:
+      test: echo 'db.runCommand({serverStatus:1}).ok' | mongo admin -u root -p rootPASSWORD--quiet | grep 1
+      interval: 10s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    networks:
+      - default-network
+      
+# https://tjtelan.com/blog/how-to-link-multiple-docker-compose-via-network/?fbclid=IwAR0J5fULJ9XHVXBoP_gdegB_z7xRRWLmeUMd3pfPagX-dI-9pVdiPX2lQvk
+networks:
+  default-network:
+    external: true

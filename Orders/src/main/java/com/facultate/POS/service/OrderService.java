@@ -52,7 +52,7 @@ public class OrderService {
         setCollectionName(clientId.toString());
 
         for (Book book : items) {
-            URI bookUri = createURI(String.format("http://localhost:8080/api/bookcollection/book/%s", book.getIsbn()));
+            URI bookUri = createURI(String.format("http://Book-app:8080/api/bookcollection/book/%s", book.getIsbn()));
             Object bookFromRequest = getBook(bookUri, token);
 
             // serialize data into JSON
