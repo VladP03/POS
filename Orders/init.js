@@ -5,7 +5,7 @@ db.createUser(
         roles: [
             {
                 role: "readWrite",
-                db: "orders"
+                db: "Orders"
             }
         ]
     }
@@ -18,7 +18,7 @@ db.createUser(
         roles: [
             {
                 role: "dbOwner",
-                db: "orders"
+                db: "Orders"
             }
         ]
     }
